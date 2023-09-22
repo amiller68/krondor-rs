@@ -16,6 +16,38 @@ use error::{WebError, WebResult};
 
 #[derive(Default, Debug, Clone, Copy, PartialEq, Eq, Hash)]
 pub struct Cid(BaseCid);
+#[derive(Default, Debug, Clone, PartialEq, Eq, Hash, Serialize, Deserialize)]
+pub struct PostLink((String, Cid));
+
+impl From<Post> for PostLink {
+    fn from(post: Post) -> Self {
+        let cid = post.cid;
+        let title = post.title;
+        PostLink((title, cid))
+    }
+}
+
+#[derive(Serialize, Deserialize, Debug, Clone, Default, PartialEq)]
+struct Post {
+    cid: Cid,
+    name: String,
+    title: String,
+    date: String,
+}
+
+impl IntoView for PostLink {
+    fn into_view(self, cx: leptos::Scope) -> View {
+        let (title, cid) = self.0;
+        let cid = cid.to_string();
+        let href = format!("/{}", cid);
+        let html_element = view! { cx,
+            <a href=href>
+                {title}
+            </a>
+        };
+        html_element.into_view(cx)
+    }
+}
 
 impl Cid {
     fn to_string(&self) -> String {
@@ -57,22 +89,28 @@ impl<'de> Deserialize<'de> for Cid {
     }
 }
 
-// This generates the component PersonTable
 #[derive(TableComponent, Serialize, Deserialize, Debug, Clone, Default, PartialEq)]
-struct Post {
-    #[table(key)]
-    pub(crate) cid: Cid,
-    #[table(skip)]
-    name: String,
-    title: String,
+struct PostRow {
+    #[table(key, skip)]
+    id: Cid,
+    link: PostLink,
     date: String,
+}
+
+impl From<Post> for PostRow {
+    fn from(post: Post) -> Self {
+        let cid = post.cid;
+        let link = PostLink::from(post.clone());
+        let date = post.date;
+        PostRow { id: cid, link, date }
+    }
 }
 
 fn config() -> KrondorConfig {
     KrondorConfig::new().unwrap()
 }
 
-async fn get_posts() -> WebResult<Vec<Post>> {
+async fn get_post_rows() -> WebResult<Vec<PostRow>> {
     let config = config();
     let root_cid = config.root_cid;
     let gateway = config.gateway;
@@ -92,10 +130,16 @@ async fn get_posts() -> WebResult<Vec<Post>> {
                 .map_err(|_| WebError::msg("get_posts(): couldn't parse manifest")).unwrap()
         })
         .collect::<Vec<Post>>();
-    Ok(posts)
+    let post_rows = posts
+        .iter()
+        .map(|post| {
+            PostRow::from(post.clone())
+        })
+        .collect::<Vec<PostRow>>();
+    Ok(post_rows)
 }
 
-async fn get_post(cid: String) -> String {
+async fn get_post_content(cid: String) -> String {
     let config = KrondorConfig::new().unwrap();
     let gateway = config.gateway;
     let post = gateway.get(&cid).await.unwrap();
@@ -118,14 +162,14 @@ fn index(cx: Scope) -> impl IntoView {
     let items = create_rw_signal(cx, vec![]);
 
     let posts = create_resource(cx, || (), move |_| async move {
-        let posts = get_posts().await.unwrap();
+        let posts = get_post_rows().await.unwrap();
         items.set(posts);
     });
     view! { cx,
         <div>
             {move || match posts.read(cx) {
                 None => view! {cx,  <p>"Loading..."</p> }.into_view(cx),
-                Some(_) => view! {cx, <PostTable items=items/>}.into_view(cx)
+                Some(_) => view! {cx, <PostRowTable items=items/>}.into_view(cx)
             }}
         </div>
     }
@@ -135,7 +179,7 @@ fn post(cx: Scope) -> impl IntoView {
     let params = use_params_map(cx);
     let post = create_resource(cx, || (), move |_| async move {
         let cid = move || params.with(|params| params.get("cid").cloned().unwrap_or_default());
-        get_post(cid()).await
+        get_post_content(cid()).await
     });
     view! { cx,
         <div>
