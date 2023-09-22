@@ -1,18 +1,17 @@
-use std::fs;
-use std::path::{Path, PathBuf};
 use reqwest;
 
-pub struct NodeClient {
-    auth: Auth,
-    endpoint: String,
-}
+// pub struct NodeClient {
+//     auth: Auth,
+//     endpoint: String,
+// }
 
-pub struct GatewayClient(String);
+#[derive(Clone, Debug)]
+pub struct GatewayClient(pub String);
 
-struct Auth {
-    username: Option<String>,
-    password: Option<String>,
-}
+// struct Auth {
+//     username: Option<String>,
+//     password: Option<String>,
+// }
 
 // impl NodeClient {
 //     pub fn new(endpoint: String, api_key: Option<String>, api_secret: Option<String>) -> Self {
@@ -90,11 +89,11 @@ struct Auth {
 // }
 
 impl GatewayClient {
-    pub async fn get(&self, cid: &str) -> Result<Vec<u8>, reqwest::Error> {
+    pub async fn get(&self, cid: &str) -> Result<String, reqwest::Error> {
         let url = format!("{}/ipfs/{}", self.0, cid);
         let client = reqwest::Client::new();
         let resp = client.get(&url).send().await.expect("Failed to send request");
-        let bytes = resp.bytes().await.expect("Failed to get bytes");
-        Ok(bytes.to_vec())
+        let text = resp.text().await.expect("Failed to get text");
+        Ok(text)
     }
 }

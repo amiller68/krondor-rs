@@ -116,6 +116,7 @@ const ABI_STRING: &str = r#"
   ]
   "#;
 
+#[derive(Clone, Debug)]
 pub struct RootCid {
   pub(crate) contract: Contract<ethers::providers::Provider<Http>>,
   signer: Option<SignerMiddleware<Provider<Http>, LocalWallet>>,

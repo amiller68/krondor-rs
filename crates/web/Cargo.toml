@@ -8,3 +8,11 @@ edition = "2021"
 [dependencies]
 leptos = { version = "0.4.10", features = ["csr", "nightly"] }
 common = { path = "../common" }
+serde_json = "1.0.107"
+anyhow = "1.0.75"
+leptos-struct-table = "0.3.2"
+serde = "1.0.188"
+async-trait = "0.1.73"
+cid = "0.10.1"
+leptos_router = { version = "0.4.10", features = ["csr", "nightly"] }
+pulldown-cmark = "0.9.3"
