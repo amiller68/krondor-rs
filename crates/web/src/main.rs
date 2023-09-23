@@ -1,13 +1,13 @@
-use std::convert::{TryFrom, From};
+use std::convert::{From, TryFrom};
 
-use leptos::*;
-use leptos_struct_table::*;
-use leptos_dom::Text;
-use serde::{Deserialize, Serialize, Deserializer, Serializer};
-use leptos_router::*;
 use async_trait::async_trait;
-use pulldown_cmark::{html, Options, Parser};
 use cid::Cid as BaseCid;
+use leptos::*;
+use leptos_dom::Text;
+use leptos_router::*;
+use leptos_struct_table::*;
+use pulldown_cmark::{html, Options, Parser};
+use serde::{Deserialize, Deserializer, Serialize, Serializer};
 
 mod config;
 mod error;
@@ -52,7 +52,6 @@ impl IntoView for PostLink {
 impl Cid {
     fn to_string(&self) -> String {
         self.0.to_string()
-        
     }
 }
 
@@ -102,7 +101,11 @@ impl From<Post> for PostRow {
         let cid = post.cid;
         let link = PostLink::from(post.clone());
         let date = post.date;
-        PostRow { id: cid, link, date }
+        PostRow {
+            id: cid,
+            link,
+            date,
+        }
     }
 }
 
@@ -115,7 +118,8 @@ async fn get_post_rows() -> WebResult<Vec<PostRow>> {
     let root_cid = config.root_cid;
     let gateway = config.gateway;
 
-    let root_cid = root_cid.get()
+    let root_cid = root_cid
+        .get()
         .await
         .map_err(|_| WebError::msg("get_posts(): couldn't get cid"))?;
 
@@ -125,16 +129,15 @@ async fn get_post_rows() -> WebResult<Vec<PostRow>> {
     let posts = manifest["posts"].as_array().unwrap();
     let posts = posts
         .iter()
-        .map(| post| {
+        .map(|post| {
             serde_json::from_value::<Post>(post.clone())
-                .map_err(|_| WebError::msg("get_posts(): couldn't parse manifest")).unwrap()
+                .map_err(|_| WebError::msg("get_posts(): couldn't parse manifest"))
+                .unwrap()
         })
         .collect::<Vec<Post>>();
     let post_rows = posts
         .iter()
-        .map(|post| {
-            PostRow::from(post.clone())
-        })
+        .map(|post| PostRow::from(post.clone()))
         .collect::<Vec<PostRow>>();
     Ok(post_rows)
 }
@@ -161,10 +164,14 @@ fn markdown_to_html(content: String) -> String {
 fn index(cx: Scope) -> impl IntoView {
     let items = create_rw_signal(cx, vec![]);
 
-    let posts = create_resource(cx, || (), move |_| async move {
-        let posts = get_post_rows().await.unwrap();
-        items.set(posts);
-    });
+    let posts = create_resource(
+        cx,
+        || (),
+        move |_| async move {
+            let posts = get_post_rows().await.unwrap();
+            items.set(posts);
+        },
+    );
     view! { cx,
         <div>
             {move || match posts.read(cx) {
@@ -177,10 +184,14 @@ fn index(cx: Scope) -> impl IntoView {
 
 fn post(cx: Scope) -> impl IntoView {
     let params = use_params_map(cx);
-    let post = create_resource(cx, || (), move |_| async move {
-        let cid = move || params.with(|params| params.get("cid").cloned().unwrap_or_default());
-        get_post_content(cid()).await
-    });
+    let post = create_resource(
+        cx,
+        || (),
+        move |_| async move {
+            let cid = move || params.with(|params| params.get("cid").cloned().unwrap_or_default());
+            get_post_content(cid()).await
+        },
+    );
     view! { cx,
         <div>
             {move || match post.read(cx) {

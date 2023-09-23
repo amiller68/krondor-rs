@@ -3,7 +3,7 @@
     "network": "sepolia",
     "rpc_url": "https://sepolia.infura.io/v3/c2a72953873d451f81839acff0f498cd",
     "chain_id": 11155111,
-    "contract_address": "0x05CEa15B2F3dD8A98f31618FdB1C0e546727a8a5"
+    "contract_address": "0x5FbDB2315678afecb367f032d93F642f64180aa3"
   },
   "ipfs": {
     "endpoint": "https://ipfs.infura.io:5001",

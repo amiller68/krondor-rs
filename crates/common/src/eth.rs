@@ -1,10 +1,12 @@
+use anyhow::Result;
 use ethers::{
+    abi::Abi,
+    contract::Contract,
     prelude::*,
     providers::{Http, Provider},
+    signers::LocalWallet,
     types::{Address, TransactionRequest},
-    contract::Contract, abi::Abi, signers::LocalWallet
 };
-use anyhow::Result;
 use std::sync::Arc;
 
 const ABI_STRING: &str = r#"
@@ -118,19 +120,13 @@ const ABI_STRING: &str = r#"
 
 #[derive(Clone, Debug)]
 pub struct RootCid {
-  pub(crate) contract: Contract<ethers::providers::Provider<Http>>,
-  signer: Option<SignerMiddleware<Provider<Http>, LocalWallet>>,
-  chain_id: u64,
+    pub(crate) contract: Contract<ethers::providers::Provider<Http>>,
+    signer: Option<SignerMiddleware<Provider<Http>, LocalWallet>>,
+    chain_id: u64,
 }
 
-
 impl RootCid {
-    pub fn new(
-        url: String,
-        address: String,
-        chain_id: u64,
-        key: Option<String>,
-    ) -> Result<Self> {
+    pub fn new(url: String, address: String, chain_id: u64, key: Option<String>) -> Result<Self> {
         let client = Provider::<Http>::try_from(url)?;
         let address: Address = address.parse()?;
         let abi: Abi = serde_json::from_str(ABI_STRING)?;
@@ -151,28 +147,29 @@ impl RootCid {
     }
 
     pub async fn update(&self, cid: String) -> Result<Option<TransactionReceipt>> {
-      let data = self.contract.encode("updateCID", (cid,))?;
-      let tx = TransactionRequest::new()
-        .to(self.contract.address())
-        .data(data)
-        .chain_id(self.chain_id);
-      match self.signer {
-        Some(ref signer) => {
-          let signed_tx = signer.send_transaction(tx, None).await?;
-          let reciept = signed_tx.await?;
-          Ok(reciept)
+        let data = self.contract.encode("updateCID", (cid,))?;
+        let tx = TransactionRequest::new()
+            .to(self.contract.address())
+            .data(data)
+            .chain_id(self.chain_id);
+        match self.signer {
+            Some(ref signer) => {
+                let signed_tx = signer.send_transaction(tx, None).await?;
+                let reciept = signed_tx.await?;
+                Ok(reciept)
+            }
+            None => {
+                panic!("No signer found");
+            }
         }
-        None => {
-          panic!("No signer found");
-        }
-      }
     }
 
     pub async fn get(&self) -> Result<String> {
-      let cid: String= self.contract
-        .method::<_, String>("getCID", ())?
-        .call()
-        .await?;
-      Ok(cid)
+        let cid: String = self
+            .contract
+            .method::<_, String>("getCID", ())?
+            .call()
+            .await?;
+        Ok(cid)
     }
 }

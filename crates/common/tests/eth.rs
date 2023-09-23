@@ -1,5 +1,5 @@
-use common::prelude::*;
 use anyhow::Result;
+use common::prelude::*;
 
 const HARDHAT_KEY: &str = "ac0974bec39a17e36ba4a6b4d238ff944bacb478cbed5efcae784d7bf4f2ff80";
 const HARDHAT_ADDRESS: &str = "0x5fbdb2315678afecb367f032d93f642f64180aa3";
