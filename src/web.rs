@@ -3,12 +3,105 @@ use leptos::*;
 use leptos_router::*;
 use leptos_struct_table::*;
 use pulldown_cmark::{html, Options, Parser};
-use serde::{Deserialize, Deserializer, Serialize, Serializer};
+use serde::{Deserialize, Serialize};
 
 use crate::prelude::*;
 
+pub struct App;
+
+impl App {
+    pub fn new() -> Self {
+        Self {}
+    }
+
+    pub fn run(&self) {
+        leptos::mount_to_body(|cx| leptos::view! { cx, <WebApp/> })
+    }
+}
+
+#[component]
+fn WebApp(cx: Scope) -> impl IntoView {
+    view! { cx,
+        <Router>
+            <Routes>
+                <Route path="/" view=Index/>
+                <Route path="/:cid" view=Post/>
+            </Routes>
+        </Router>
+    }
+}
+
+#[component]
+fn Index(cx: Scope) -> impl IntoView {
+    let items = create_rw_signal(cx, vec![]);
+
+    let posts = create_resource(
+        cx,
+        || (),
+        move |_| async move {
+            let posts = get_post_rows().await.unwrap();
+            items.set(posts);
+        },
+    );
+    view! { cx,
+        <div>
+            <p>"Welcome to Krondor-Rs!"</p>
+            <p>"You're currently using a static wasm-app hosted on IPFS."</p>
+            // <p>"This site is built and maintained by me, come find me on:"</p>
+
+    //         // const contacts: INavigationItem[] = [
+    // {
+    //     key: 'email',
+    //     item: 'Email',
+    //     href: 'mailto:al@krondor.org',
+    //   },
+    //   {
+    //     key: 'github',
+    //     item: 'Github',
+    //     href: 'https://github.com/amiller68/krondor',
+    //   },
+    //   {
+    //     key: 'twitter',
+    //     item: 'Twitter',
+    //     href: 'https://twitter.com/lord_krondor',
+    //   },
+    //   {
+    //     key: 'discord',
+    //     item: 'Discord',
+    //     href: 'https://discordapp.com/users/krondor#5903',
+    //   },
+    // ];
+            {move || match posts.read(cx) {
+                None => view! {cx,  <p>"Loading..."</p> }.into_view(cx),
+                Some(_) => view! {cx, <PostRowTable items=items/>}.into_view(cx)
+            }}
+        </div>
+    }
+}
+
+#[component]
+fn Post(cx: Scope) -> impl IntoView {
+    let params = use_params_map(cx);
+    let post = create_resource(
+        cx,
+        || (),
+        move |_| async move {
+            let cid = move || params.with(|params| params.get("cid").cloned().unwrap_or_default());
+            get_post_content(cid()).await.unwrap()
+        },
+    );
+    view! { cx,
+        <div>
+            {move || match post.read(cx) {
+                None => view! {cx,  <p>"Loading..."</p> }.into_view(cx),
+                Some(data) => view! {cx, <div class="prose max-w-none" inner_html=markdown_to_html(data)></div>}.into_view(cx)
+            }}
+        </div>
+    }
+}
+
 #[derive(Default, Debug, Clone, PartialEq, Eq, Hash, Serialize, Deserialize)]
-pub struct PostLink(pub (String, Cid));
+pub struct PostLink((String, Cid));
 
 impl From<Post> for PostLink {
     fn from(post: Post) -> Self {
@@ -50,18 +143,6 @@ impl From<Post> for PostRow {
             link,
             date,
         }
-    }
-}
-
-#[component]
-pub fn App(cx: Scope) -> impl IntoView {
-    view! { cx,
-        <Router>
-            <Routes>
-                <Route path="/" view=index/>
-                <Route path="/:cid" view=post/>
-            </Routes>
-        </Router>
     }
 }
 
@@ -109,45 +190,4 @@ fn markdown_to_html(content: String) -> String {
     let mut html = String::new();
     html::push_html(&mut html, parser);
     html
-}
-
-fn index(cx: Scope) -> impl IntoView {
-    let items = create_rw_signal(cx, vec![]);
-
-    let posts = create_resource(
-        cx,
-        || (),
-        move |_| async move {
-            let posts = get_post_rows().await.unwrap();
-            items.set(posts);
-        },
-    );
-    view! { cx,
-        <div>
-            {move || match posts.read(cx) {
-                None => view! {cx,  <p>"Loading..."</p> }.into_view(cx),
-                Some(_) => view! {cx, <PostRowTable items=items/>}.into_view(cx)
-            }}
-        </div>
-    }
-}
-
-fn post(cx: Scope) -> impl IntoView {
-    let params = use_params_map(cx);
-    let post = create_resource(
-        cx,
-        || (),
-        move |_| async move {
-            let cid = move || params.with(|params| params.get("cid").cloned().unwrap_or_default());
-            get_post_content(cid()).await.unwrap()
-        },
-    );
-    view! { cx,
-        <div>
-            {move || match post.read(cx) {
-                None => view! {cx,  <p>"Loading..."</p> }.into_view(cx),
-                Some(data) => view! {cx, <div class="prose max-w-none" inner_html=markdown_to_html(data)></div>}.into_view(cx)
-            }}
-        </div>
-    }
 }
