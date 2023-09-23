@@ -53,6 +53,18 @@ impl From<Post> for PostRow {
     }
 }
 
+#[component]
+pub fn App(cx: Scope) -> impl IntoView {
+    view! { cx,
+        <Router>
+            <Routes>
+                <Route path="/" view=index/>
+                <Route path="/:cid" view=post/>
+            </Routes>
+        </Router>
+    }
+}
+
 async fn get_post_rows() -> KrondorResult<Vec<PostRow>> {
     let config = config()?;
     let root_cid = config.root_cid;
@@ -60,7 +72,7 @@ async fn get_post_rows() -> KrondorResult<Vec<PostRow>> {
     let root_cid = root_cid
         .get()
         .await
-        .map_err(|_| KrondorError::msg("get_posts(): couldn't get cid"))?;
+        .map_err(|_| KrondorError::msg("get_post_rows(): couldn't get cid"))?;
 
     let manifest_cid = format!("{}/manifest.json", root_cid);
     let manifest = gateway.get(&manifest_cid).await.unwrap();
@@ -70,7 +82,7 @@ async fn get_post_rows() -> KrondorResult<Vec<PostRow>> {
         .iter()
         .map(|post| {
             serde_json::from_value::<Post>(post.clone())
-                .map_err(|_| KrondorError::msg("get_posts(): couldn't parse manifest"))
+                .map_err(|_| KrondorError::msg("get_post_rows(): couldn't parse manifest"))
                 .unwrap()
         })
         .collect::<Vec<Post>>();
@@ -96,7 +108,6 @@ fn markdown_to_html(content: String) -> String {
     let parser = Parser::new_ext(&content, options);
     let mut html = String::new();
     html::push_html(&mut html, parser);
-
     html
 }
 
@@ -138,17 +149,5 @@ fn post(cx: Scope) -> impl IntoView {
                 Some(data) => view! {cx, <div class="prose max-w-none" inner_html=markdown_to_html(data)></div>}.into_view(cx)
             }}
         </div>
-    }
-}
-
-#[component]
-pub fn App(cx: Scope) -> impl IntoView {
-    view! { cx,
-        <Router>
-            <Routes>
-                <Route path="/" view=index/>
-                <Route path="/:cid" view=post/>
-            </Routes>
-        </Router>
     }
 }
