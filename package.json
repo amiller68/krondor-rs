@@ -1,0 +1,10 @@
+{
+  "name": "web",
+  "version": "1.0.0",
+  "description": "js package wrapper around leptos",
+  "license": "MIT",
+  "scripts": {
+    "build": "trunk build --release",
+    "start": "trunk serve"
+  }
+}
