@@ -1,5 +1,6 @@
-# Contracts 
-## Install dependencies 
+# Contracts
+
+## Install dependencies
 
 ```bash
 yarn install

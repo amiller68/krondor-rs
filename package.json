@@ -4,7 +4,7 @@
   "description": "js package wrapper around leptos",
   "license": "MIT",
   "scripts": {
-    "build": "trunk build --release",
+    "build": "./bin/build.sh",
     "start": "trunk serve"
   }
 }

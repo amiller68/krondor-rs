@@ -12,10 +12,8 @@
   },
   "scripts": {
     "prettier": "prettier --write \"**/*.{js,jsx,ts,tsx,json,css,scss,md,sol}\"",
-    "lint": "solhint contracts/**/*.sol",
     "build": "npx hardhat compile",
     "test": "npx hardhat test",
-    "deploy:local": "npx hardhat run --network localhost scripts/deploy.ts",
     "deploy": "npx hardhat run --network default scripts/deploy.ts",
     "verify": "npx hardhat verify --contract 'contracts/rootCid.sol:RootCid' ${1} --network default",
     "clean": "npx hardhat clean"

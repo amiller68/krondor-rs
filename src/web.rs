@@ -47,30 +47,7 @@ fn Index(cx: Scope) -> impl IntoView {
         <div>
             <p>"Welcome to Krondor-Rs!"</p>
             <p>"You're currently using a static wasm-app hosted on IPFS."</p>
-            // <p>"This site is built and maintained by me, come find me on:"</p>
-
-    //         // const contacts: INavigationItem[] = [
-    // {
-    //     key: 'email',
-    //     item: 'Email',
-    //     href: 'mailto:al@krondor.org',
-    //   },
-    //   {
-    //     key: 'github',
-    //     item: 'Github',
-    //     href: 'https://github.com/amiller68/krondor',
-    //   },
-    //   {
-    //     key: 'twitter',
-    //     item: 'Twitter',
-    //     href: 'https://twitter.com/lord_krondor',
-    //   },
-    //   {
-    //     key: 'discord',
-    //     item: 'Discord',
-    //     href: 'https://discordapp.com/users/krondor#5903',
-    //   },
-    // ];
+            <p>"Look at some of the stuff I've written:"</p>
             {move || match posts.read(cx) {
                 None => view! {cx,  <p>"Loading..."</p> }.into_view(cx),
                 Some(_) => view! {cx, <PostRowTable items=items/>}.into_view(cx)
@@ -147,7 +124,7 @@ impl From<Post> for PostRow {
 }
 
 async fn get_post_rows() -> KrondorResult<Vec<PostRow>> {
-    let config = config()?;
+    let config = KrondorConfig::new()?;
     let root_cid = config.root_cid;
     let gateway = config.gateway;
     let root_cid = root_cid
@@ -175,7 +152,7 @@ async fn get_post_rows() -> KrondorResult<Vec<PostRow>> {
 }
 
 async fn get_post_content(cid: String) -> KrondorResult<String> {
-    let config = config()?;
+    let config = KrondorConfig::new()?;
     let gateway = config.gateway;
     let post = gateway.get(&cid).await.map_err(|_| KrondorError::msg("get_post_content(): couldn't get post"))?;
     Ok(post)

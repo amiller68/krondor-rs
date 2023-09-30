@@ -1,0 +1,38 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Globals.scss */
+@import 'App.module.css';
+@import 'Variables.module.css';
+
+:root {
+  /* Text Configuration */
+
+  background: var(--main-background);
+  font-family: 'Mono', serif;
+  color: var(--main-text);
+  font-size: 20px;
+
+  /* Media Query Controls */
+
+  @media (max-width: 1880px) {
+    font-size: 18px;
+  }
+
+  @media (max-width: 1248px) {
+    font-size: 16px;
+  }
+
+  @media (max-width: 1024px) {
+    font-size: 14px;
+  }
+
+  /* Hide Scrollbars */
+
+  ::-webkit-scrollbar {
+    display: none;
+  }
+
+  scrollbar-width: none;
+}

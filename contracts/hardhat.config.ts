@@ -1,22 +1,22 @@
-require('@nomiclabs/hardhat-ethers');
-require('@openzeppelin/hardhat-upgrades');
-require('@nomiclabs/hardhat-etherscan');
-require('@nomicfoundation/hardhat-chai-matchers');
-require('hardhat-gas-reporter');
+require("@nomiclabs/hardhat-ethers");
+require("@openzeppelin/hardhat-upgrades");
+require("@nomiclabs/hardhat-etherscan");
+require("@nomicfoundation/hardhat-chai-matchers");
+require("hardhat-gas-reporter");
 
 // Deployment secret management
-require('dotenv').config({ path: './../.env' });
+require("dotenv").config({ path: "./../.env" });
 
 // Dev and prod config
 let config;
-if (process.env.NODE_ENV === 'development') {
-  config = require('./../krondor.dev.json');
+if (process.env.NODE_ENV === "development") {
+  config = require("./../krondor.dev.json");
 } else {
-  config = require('./../krondor.json');
+  config = require("./../krondor.json");
 }
 
 module.exports = {
-  solidity: '0.8.19',
+  solidity: "0.8.19",
   networks: {
     default: {
       url: `${config.eth.rpc_url}/${process.env.RPC_API_KEY}`,
@@ -24,6 +24,6 @@ module.exports = {
     },
   },
   etherscan: {
-    apiKey: process.env.ETHERSCAN_API_KEY ?? '',
+    apiKey: process.env.ETHERSCAN_API_KEY ?? "",
   },
 };

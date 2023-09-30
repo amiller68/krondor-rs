@@ -11,13 +11,15 @@ mod cli;
 mod web;
 
 pub mod prelude {
-    // Commonly used types
-    pub use crate::config::config;
     pub use crate::error::{KrondorError, KrondorResult};
     pub use crate::types::{Cid, Post};
     pub use crate::eth::RootCid;
 
-    // IPFS
+    #[cfg(target_arch = "wasm32")]
+    pub use crate::config::KrondorConfig;
+    #[cfg(not(target_arch = "wasm32"))]
+    pub use crate::config::{KrondorConfig, OnDiskKrondorConfig};
+
     #[cfg(target_arch = "wasm32")]
     pub use crate::ipfs::GatewayClient;
     #[cfg(not(target_arch = "wasm32"))]
