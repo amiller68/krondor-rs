@@ -20,6 +20,9 @@ impl Post {
     pub fn cid(&self) -> Cid {
         self.cid
     }
+    pub fn name(&self) -> &str {
+        self.name.as_str()
+    }
     pub fn title(&self) -> &str {
         self.title.as_str()
     }

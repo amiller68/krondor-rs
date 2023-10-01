@@ -2202,6 +2202,7 @@ dependencies = [
  "tokio",
  "url",
  "wasm-bindgen-test",
+ "web-sys",
 ]
 
 [[package]]

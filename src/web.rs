@@ -78,21 +78,22 @@ fn Post(cx: Scope) -> impl IntoView {
 }
 
 #[derive(Default, Debug, Clone, PartialEq, Eq, Hash, Serialize, Deserialize)]
-pub struct PostLink((String, Cid));
+pub struct PostLink((String, String));
 
 impl From<Post> for PostLink {
     fn from(post: Post) -> Self {
-        let cid = post.cid();
         let title = post.title();
-        PostLink((title.to_string(), cid))
+        let name = post.name();
+        PostLink((title.to_string(), name.to_string()))
     }
 }
 
 impl IntoView for PostLink {
     fn into_view(self, cx: leptos::Scope) -> View {
-        let (title, cid) = self.0;
-        let cid = cid.to_string();
-        let href = format!("/{}", cid);
+        let url = web_sys::window().unwrap().location().href().unwrap();
+        let (title, name) = self.0;
+        let name = name.to_string();
+        let href = format!("/{}", name);
         let html_element = view! { cx,
             <a href=href>
                 {title}
@@ -125,16 +126,25 @@ impl From<Post> for PostRow {
 
 async fn get_post_rows() -> KrondorResult<Vec<PostRow>> {
     let config = KrondorConfig::new()?;
-    let root_cid = config.root_cid;
-    let gateway = config.gateway;
-    let root_cid = root_cid
-        .get()
-        .await
-        .map_err(|_| KrondorError::msg("get_post_rows(): couldn't get cid"))?;
+    let url = web_sys::window().unwrap().location().href().unwrap();
+    // GEt the current url
+    // let url = cx.with(|cx| cx.url().to_string());
+    // let root_cid = config.root_cid;
+    // let gateway = config.gateway;
+    // let root_cid = root_cid
+    //     .get()
+    //     .await
+    //     .map_err(|_| KrondorError::msg("get_post_rows(): couldn't get cid"))?;
 
-    let manifest_cid = format!("{}/manifest.json", root_cid);
-    let manifest = gateway.get(&manifest_cid).await.unwrap();
-    let manifest = serde_json::from_str::<serde_json::Value>(&manifest).unwrap();
+    // let manifest_cid = format!("{}/manifest.json", root_cid);
+    // let manifest = gateway.get(&manifest_cid).await.unwrap();
+    // Fetch the manifest from the current route + /manifest.json
+    let manifest = reqwest::get(format!("{}/data/manifest.json", url))
+        .await
+        .map_err(|_| KrondorError::msg("get_post_rows(): couldn't get manifest"))?
+        .json::<serde_json::Value>()
+        .await
+        .map_err(|_| KrondorError::msg("get_post_rows(): couldn't get manifest"))?;
     let posts = manifest["posts"].as_array().unwrap();
     let posts = posts
         .iter()
@@ -151,11 +161,17 @@ async fn get_post_rows() -> KrondorResult<Vec<PostRow>> {
     Ok(post_rows)
 }
 
-async fn get_post_content(cid: String) -> KrondorResult<String> {
-    let config = KrondorConfig::new()?;
-    let gateway = config.gateway;
-    let post = gateway.get(&cid).await.map_err(|_| KrondorError::msg("get_post_content(): couldn't get post"))?;
-    Ok(post)
+async fn get_post_content(name: String) -> KrondorResult<String> {
+    // let config = KrondorConfig::new()?;
+    // let gateway = config.gateway;
+    // let post = gateway.get(&cid).await.map_err(|_| KrondorError::msg("get_post_content(): couldn't get post"))?;
+    let url = web_sys::window().unwrap().location().href().unwrap();
+    reqwest::get(format!("{}/posts/{}", url, name))
+        .await
+        .map_err(|_| KrondorError::msg("get_post_content(): couldn't get post"))?
+        .text()
+        .await
+        .map_err(|_| KrondorError::msg("get_post_content(): couldn't get post"))
 }
 
 fn markdown_to_html(content: String) -> String {
