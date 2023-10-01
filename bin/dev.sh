@@ -8,7 +8,7 @@ yarn build
 
 # Pushing to IPFS
 echo "Pushing to IPFS..."
-ipfs add .github/dist/* -r -w -q | tail -n 1 > .ipfs_hash
+ipfs add public/* -r -w -q | tail -n 1 > .ipfs_hash
 IPFS_HASH=$(cat .ipfs_hash)
 echo "Inspect at http://localhost:8080/ipfs/$IPFS_HASH"
 

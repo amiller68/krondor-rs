@@ -11,5 +11,5 @@ rm dist/index.html-e
 
 # move the contents of dist to .github/content
 # remove all files in .github/content
-rm .github/dist/*
-mv dist/* .github/dist
+rm public/*
+mv dist/* public
