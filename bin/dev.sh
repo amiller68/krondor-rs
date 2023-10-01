@@ -1,12 +1,9 @@
-# Start `ipfs daemon` in a new terminal window
 echo "Starting ipfs daemon..."
 tmux new-session -d -s ipfs 'ipfs daemon'
 
 echo "Building static site..."
-# Building site
 yarn build
 
-# Pushing to IPFS
 echo "Pushing to IPFS..."
 ipfs add public/* -r -w -q | tail -n 1 > .ipfs_hash
 IPFS_HASH=$(cat .ipfs_hash)

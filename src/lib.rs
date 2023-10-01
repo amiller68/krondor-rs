@@ -1,6 +1,5 @@
-mod config;
+// mod config;
 mod error;
-mod eth;
 mod ipfs;
 mod types;
 
@@ -13,10 +12,10 @@ mod web;
 pub mod prelude {
     pub use crate::error::{KrondorError, KrondorResult};
     pub use crate::types::{Cid, Post};
-    pub use crate::eth::RootCid;
+    // pub use crate::eth::RootCid;
 
-    #[cfg(target_arch = "wasm32")]
-    pub use crate::config::KrondorConfig;
+    // #[cfg(target_arch = "wasm32")]
+    // pub use crate::config::KrondorConfig;
     #[cfg(not(target_arch = "wasm32"))]
     pub use crate::config::{KrondorConfig, OnDiskKrondorConfig};
 

@@ -90,7 +90,6 @@ impl From<Post> for PostLink {
 
 impl IntoView for PostLink {
     fn into_view(self, cx: leptos::Scope) -> View {
-        let url = web_sys::window().unwrap().location().href().unwrap();
         let (title, name) = self.0;
         let name = name.to_string();
         let href = format!("/{}", name);
@@ -125,7 +124,7 @@ impl From<Post> for PostRow {
 }
 
 async fn get_post_rows() -> KrondorResult<Vec<PostRow>> {
-    let config = KrondorConfig::new()?;
+    // let config = KrondorConfig::new()?;
     let url = web_sys::window().unwrap().location().href().unwrap();
     // GEt the current url
     // let url = cx.with(|cx| cx.url().to_string());
