@@ -25,7 +25,8 @@ fn WebApp(cx: Scope) -> impl IntoView {
         <Router>
             <Routes>
                 <Route path="/" view=Index/>
-                <Route path="/:cid" view=Post/>
+                <Route path="/blog" view=Blog/>
+                <Route path="/:name" view=Post/>
             </Routes>
         </Router>
     }
@@ -33,6 +34,20 @@ fn WebApp(cx: Scope) -> impl IntoView {
 
 #[component]
 fn Index(cx: Scope) -> impl IntoView {
+    view! { cx,
+        <div>
+            <p>"Welcome to Krondor-Rs!"</p>
+            <p>"You're currently using a static wasm-app hosted on IPFS."</p>
+            <p>"Look at some of the stuff I've written:"</p>
+            <ul>
+                <li><a href="/blog">"Blog"</a></li>
+            </ul>
+        </div>
+    }
+}
+
+#[component]
+fn Blog(cx: Scope) -> impl IntoView {
     let items = create_rw_signal(cx, vec![]);
 
     let posts = create_resource(
@@ -63,7 +78,7 @@ fn Post(cx: Scope) -> impl IntoView {
         cx,
         || (),
         move |_| async move {
-            let cid = move || params.with(|params| params.get("cid").cloned().unwrap_or_default());
+            let cid = move || params.with(|params| params.get("name").cloned().unwrap_or_default());
             get_post_content(cid()).await.unwrap()
         },
     );
@@ -124,26 +139,13 @@ impl From<Post> for PostRow {
 }
 
 async fn get_post_rows() -> KrondorResult<Vec<PostRow>> {
-    // let config = KrondorConfig::new()?;
     let url = web_sys::window().unwrap().location().href().unwrap();
-    // GEt the current url
-    // let url = cx.with(|cx| cx.url().to_string());
-    // let root_cid = config.root_cid;
-    // let gateway = config.gateway;
-    // let root_cid = root_cid
-    //     .get()
-    //     .await
-    //     .map_err(|_| KrondorError::msg("get_post_rows(): couldn't get cid"))?;
-
-    // let manifest_cid = format!("{}/manifest.json", root_cid);
-    // let manifest = gateway.get(&manifest_cid).await.unwrap();
-    // Fetch the manifest from the current route + /manifest.json
     let manifest = reqwest::get(format!("{}/data/manifest.json", url))
         .await
-        .map_err(|_| KrondorError::msg("get_post_rows(): couldn't get manifest"))?
+        .map_err(|_| KrondorError::msg("get_post_rows(): couldn't get manifest response"))?
         .json::<serde_json::Value>()
         .await
-        .map_err(|_| KrondorError::msg("get_post_rows(): couldn't get manifest"))?;
+        .map_err(|_| KrondorError::msg("get_post_rows(): couldn't get manifest json"))?;
     let posts = manifest["posts"].as_array().unwrap();
     let posts = posts
         .iter()
