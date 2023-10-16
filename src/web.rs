@@ -1,9 +1,5 @@
-use async_trait::async_trait;
 use leptos::*;
 use leptos_router::*;
-use leptos_struct_table::*;
-use pulldown_cmark::{html, Options, Parser};
-use serde::{Deserialize, Serialize};
 
 mod index;
 mod render;
@@ -30,12 +26,12 @@ fn WebApp() -> impl IntoView {
     view! {
         <div>
             <h1>"Hello, World!"</h1>
-            
+
         </div>
         <Router>
             <Routes>
                 <Route path="/" view=Index/>
-                <Route path="/:cid" view=Render/>
+                <Route path="/:name" view=Render/>
             </Routes>
         </Router>
     }

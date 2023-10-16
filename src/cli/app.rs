@@ -1,4 +1,4 @@
-use clap::{command, arg, Subcommand, Args};
+use clap::{arg, command, Args, Subcommand};
 
 pub use clap::Parser;
 
@@ -17,32 +17,18 @@ pub struct AppArgs {
 #[derive(Debug, Subcommand, Clone)]
 pub enum Command {
     Init,
-    #[command(subcommand)]
     New(NewSubcommand),
 }
 
-#[derive(Debug, Subcommand, Clone)]
-pub enum NewSubcommand {
-    Post(PostSubcommand),
-    Gallery(GallerySubcommand),
-}
-
-#[derive(Debug, Clone, Args)]
-pub struct PostSubcommand {
-    /// Name of the post
+#[derive(Debug, Args, Clone)]
+pub struct NewSubcommand {
+    /// Name of the new post
     #[arg(short, long)]
     pub name: String,
-    /// Title of the post
+    /// Title of the new post
     #[arg(short, long)]
     pub title: String,
-}
-
-#[derive(Debug, Parser, Clone)]
-pub struct GallerySubcommand {
-    /// Name of the gallery
-    #[arg(short, long)]
-    pub name: String,
-    /// Description of the gallery
+    /// Description of the new gallery
     #[arg(short, long)]
     pub description: String,
 }

@@ -9,7 +9,7 @@ use futures_util::StreamExt;
 #[cfg(not(target_arch = "wasm32"))]
 use tokio::fs;
 
-use crate::error::{KrondorResult, KrondorError};
+use crate::error::{KrondorError, KrondorResult};
 
 #[cfg(not(target_arch = "wasm32"))]
 pub struct NodeClient {
@@ -39,7 +39,8 @@ impl NodeClient {
     }
 
     pub async fn pin_file(&self, file_path: &Path) -> KrondorResult<String> {
-        let file: fs::File = fs::File::open(file_path).await
+        let file: fs::File = fs::File::open(file_path)
+            .await
             .map_err(KrondorError::default)?;
         let body = Body::from(file);
         let filename = Path::new(file_path)
@@ -69,8 +70,8 @@ impl NodeClient {
         if resp.status().is_success() {
             let text = resp.text().await.map_err(KrondorError::default)?;
             println!("Text: {:?}", text);
-            let value: serde_json::Value = serde_json::from_str(&text)
-                .map_err(KrondorError::default)?;
+            let value: serde_json::Value =
+                serde_json::from_str(&text).map_err(KrondorError::default)?;
             Ok(value["Hash"].as_str().unwrap().to_string())
         } else {
             Err(KrondorError::msg("Failed to pin file"))
@@ -91,11 +92,13 @@ impl NodeClient {
             .await
             .map_err(KrondorError::default)?;
 
-        let mut out_file = fs::File::create(file_path).await
+        let mut out_file = fs::File::create(file_path)
+            .await
             .map_err(KrondorError::default)?;
         let mut stream = resp.bytes_stream();
         while let Some(chunk) = stream.next().await {
-            tokio::io::copy(&mut chunk.unwrap().as_ref(), &mut out_file).await
+            tokio::io::copy(&mut chunk.unwrap().as_ref(), &mut out_file)
+                .await
                 .map_err(KrondorError::default)?;
         }
         Ok(())
@@ -106,7 +109,8 @@ impl NodeClient {
         let mut entries = fs::read_dir(dir_path).await.expect("Unable to read dir");
         while let Some(entry) = entries.next_entry().await.expect("Dir entry failed") {
             if entry.path().is_file() {
-                let file = fs::File::open(entry.path()).await
+                let file = fs::File::open(entry.path())
+                    .await
                     .map_err(KrondorError::default)?;
                 let body = Body::from(file);
                 let filename = Path::new(&entry.path())
@@ -142,13 +146,12 @@ impl NodeClient {
 
         if resp.status().is_success() {
             let mut results = vec![];
-            let text = resp.text().await
-                .map_err(KrondorError::default)?;
+            let text = resp.text().await.map_err(KrondorError::default)?;
             let lines: Vec<&str> = text.split('\n').collect();
             for line in lines {
                 if !line.is_empty() {
-                    let parsed: serde_json::Value = serde_json::from_str(line)
-                        .map_err(KrondorError::default)?;
+                    let parsed: serde_json::Value =
+                        serde_json::from_str(line).map_err(KrondorError::default)?;
                     results.push(parsed.clone());
                 }
             }
@@ -177,7 +180,7 @@ impl GatewayClient {
         Ok(bytes.to_vec())
     }
 
-    pub async fn get(&self, cid: &str) ->  KrondorResult<reqwest::Response> {
+    pub async fn get(&self, cid: &str) -> KrondorResult<reqwest::Response> {
         let url = format!("{}/{}", self.0, cid);
         let client = reqwest::Client::new();
         let resp = client

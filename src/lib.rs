@@ -1,6 +1,7 @@
+#![allow(dead_code)]
+
 mod env;
 pub mod error;
-mod ipfs;
 mod types;
 
 #[cfg(not(target_arch = "wasm32"))]

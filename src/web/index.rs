@@ -1,11 +1,9 @@
+use crate::env::APP_NAME;
+use crate::types::{Item, Cid};
 use async_trait::async_trait;
 use leptos::*;
-use leptos_router::*;
 use leptos_struct_table::*;
-use pulldown_cmark::{html, Options, Parser};
 use serde::{Deserialize, Serialize};
-use crate::types::{Cid, History, Item, Manifest};
-use crate::env::APP_NAME;
 
 use super::utils::get_manifest;
 
@@ -17,10 +15,16 @@ pub fn Index() -> impl IntoView {
         || (),
         move |_| async move {
             let manifest = get_manifest().await.expect("manifest");
-            items.set(manifest.items.iter().map(|item| {
-                let item_row: ItemRow = item.into();
-                item_row
-            }).collect());
+            items.set(
+                manifest
+                    .items
+                    .iter()
+                    .map(|item| {
+                        let item_row: ItemRow = item.into();
+                        item_row
+                    })
+                    .collect(),
+            );
         },
     );
 
@@ -29,7 +33,7 @@ pub fn Index() -> impl IntoView {
             <p>Welcome to {APP_NAME}</p>
             <p>"You're currently using a static wasm-app hosted on IPFS."</p>
             <p>"This is just a jumble of stuff im hosting here: "</p>
-            {move || match item_resource.read() {
+            {move || match item_resource.get() {
                 None => view! { <p>"Loading..."</p> }.into_view(),
                 Some(_) => view! {<ItemRowTable items=items/>}.into_view()
             }}
@@ -37,22 +41,14 @@ pub fn Index() -> impl IntoView {
     }
 }
 
-#[derive(Default, Debug, Clone, PartialEq, Eq, Hash, Serialize, Deserialize)]
-pub struct ItemLink((String, String));
-
-impl From<Item> for ItemLink {
-    fn from(item: Item) -> Self {
-        ItemLink((item.name().to_string(), item.cid().to_string()))
-    }
-}
-
-impl IntoView for ItemLink {
+impl IntoView for Item {
     fn into_view(self) -> View {
-        let (name, cid) = self.0;
-        let href = format!("/{}", cid);
+        let name = self.name().to_string();
+        let title = self.title().to_string();
+        let href = format!("{}", name);
         let html_element = view! {
             <a href=href>
-                {name}
+                <h3>{title}</h3>
             </a>
         };
         html_element.into_view()
@@ -63,17 +59,19 @@ impl IntoView for ItemLink {
 struct ItemRow {
     #[table(key, skip)]
     id: Cid,
-    link: ItemLink,
-    collection: String,
+    item: Item,
     date: String,
 }
 
 impl From<&Item> for ItemRow {
     fn from(item: &Item) -> Self {
+        // Create a random id
         let id = item.cid().clone();
-        let link = item.clone().into();
-        let collection = item.collection().to_string();
         let date = item.date().to_string();
-        Self { id, link, collection, date }
+        Self {
+            id,
+            item: item.clone(),
+            date,
+        }
     }
 }

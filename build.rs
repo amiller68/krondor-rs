@@ -11,13 +11,7 @@ fn main() {
     // Load Build Parameters
     println!("cargo:rerun-if-changed=.env.config");
     let mut f = File::create(ENV_RS_PATH).unwrap();
-
-    println!("cargo:rerun-if-env-changed=APP_DEV");
-    let dev = std::env::var("APP_DEV").unwrap_or("false".to_string());
-    let dev = dev.parse::<bool>().unwrap_or(false);
-
     let version = env!("CARGO_PKG_VERSION");
-
     from_filename(CONFIG_PATH).ok();
 
     // Build:
@@ -33,27 +27,8 @@ fn main() {
     );
     f.write_all(line.as_bytes()).unwrap();
 
-    let env_map = env::vars().collect::<Vec<(String, String)>>();
-    let dev_env_map = env_map
-        .clone()
-        .into_iter()
-        .filter_map(|(key, value)| {
-            if key.starts_with("DEV_") {
-                let key = &key[4..];
-                Some((key.to_string(), value))
-            } else {
-                None
-            }
-        })
-        .collect::<Vec<(String, String)>>();
-    for (key, mut value) in env::vars() {
+    for (key, value) in env::vars() {
         if key.starts_with("APP_") {
-            if dev {
-                value = match dev_env_map.iter().find(|(k, _)| k == &key) {
-                    Some((_, v)) => v.to_string(),
-                    None => value,
-                };
-            }
             let line = format!(
                 "pub const {}: &'static str = \"{}\";\n",
                 key,

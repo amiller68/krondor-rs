@@ -1,10 +1,10 @@
+// TODO: do something with this
+
 use std::convert::{From, TryFrom};
 
 use cid::Cid as BaseCid;
 use leptos::{IntoView, View};
-use multihash::Multihash;
 use serde::{Deserialize, Deserializer, Serialize, Serializer};
-use sha3::{Digest, Sha3_256};
 
 use crate::error::{KrondorError, KrondorResult};
 
@@ -26,18 +26,18 @@ impl Cid {
 
     #[cfg(not(target_arch = "wasm32"))]
     pub fn from_file(path: &std::path::Path) -> KrondorResult<Self> {
+        use sha3::{Digest, Sha3_256};
+        use multihash::Multihash;
         // Read the file as bytes
         // Open the file
         let mut file = std::fs::File::open(path).map_err(KrondorError::default)?;
         // Read the file
         let mut bytes = Vec::new();
-        std::io::Read::read_to_end(&mut file, &mut bytes)
-            .map_err(KrondorError::default)?;
+        std::io::Read::read_to_end(&mut file, &mut bytes).map_err(KrondorError::default)?;
         // Hash the bytes
         let hash = Sha3_256::digest(&bytes);
         // Create the cid
-        let mh =
-            Multihash::wrap(SHA3_256_CODEC, &hash).map_err(KrondorError::default)?;
+        let mh = Multihash::wrap(SHA3_256_CODEC, &hash).map_err(KrondorError::default)?;
         let cid = BaseCid::new_v1(RAW_CODEC, mh);
         Ok(Self(cid))
     }
