@@ -25,18 +25,18 @@ fn main() {
 
     let key = "APP_VERSION";
     let line = format!(
-        "pub const {}: &'static str = \"{}\";\n",
+        "pub const {}: &str = \"{}\";\n",
         key,
-        version.replace("\"", "\\\"")
+        version.replace('\"', "\\\"")
     );
     f.write_all(line.as_bytes()).unwrap();
 
     for (key, value) in env::vars() {
         if key.starts_with("APP_") {
             let line = format!(
-                "pub const {}: &'static str = \"{}\";\n",
+                "pub const {}: &str = \"{}\";\n",
                 key,
-                value.replace("\"", "\\\"")
+                value.replace('\"', "\\\"")
             );
             f.write_all(line.as_bytes()).unwrap();
         }

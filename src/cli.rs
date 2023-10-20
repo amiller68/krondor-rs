@@ -7,6 +7,12 @@ pub use app:: App;
 use crate::error::KrondorResult;
 use crate::types::{Manifest, Item, SerializedCid};
 
+impl Default for App {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+
 impl App {
     pub fn new() -> Self {
         let args = AppArgs::parse();

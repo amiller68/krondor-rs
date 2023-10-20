@@ -13,11 +13,13 @@ const RAW_CODEC: u64 = 0x55;
 #[derive(Default, Debug, Clone, Copy, PartialEq, Eq, Hash)]
 pub struct SerializedCid(Cid);
 
-impl SerializedCid {
-    pub fn to_string(&self) -> String {
-        self.0.to_string()
+impl std::fmt::Display for SerializedCid {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        self.0.to_string().fmt(f)
     }
+}
 
+impl SerializedCid {
     pub fn from_str(s: &str) -> KrondorResult<Self> {
         let cid = Cid::try_from(s).map_err(KrondorError::default)?;
         Ok(Self(cid))

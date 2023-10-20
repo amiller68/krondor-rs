@@ -25,7 +25,7 @@ pub fn init_space() -> KrondorResult<()> {
         return Err(KrondorError::msg("Manifest file already exists"));
     }
 
-    std::fs::create_dir_all(&dist_path).map_err(KrondorError::default)?;
+    std::fs::create_dir_all(dist_path).map_err(KrondorError::default)?;
 
     let manifest = Manifest::new();
 
