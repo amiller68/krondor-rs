@@ -3,7 +3,7 @@
     "version": "1.0.0",
     "description": "Simple blog",
     "scripts": {
-        "prepare": "rustup update && cargo install trunk",
+        "prepare": "rustup override set 1.38.0 && rustup update && cargo install trunk",
         "dev": "trunk serve",
         "build": "trunk build --release"
     },
