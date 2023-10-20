@@ -1,5 +1,2 @@
 **/target
-**/node_modules
-**/pkg
-.env
-krondor.json
+**/dist
