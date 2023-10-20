@@ -1,7 +1,2 @@
 **/target
-**/node_modules
-**/pkg
 **/dist
-.env
-.ipfs_hash
-krondor.json

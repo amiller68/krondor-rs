@@ -1,0 +1,16 @@
+{
+    "name": "krondor-rs",
+    "version": "1.0.0",
+    "description": "Simple blog",
+    "scripts": {
+        "prepare": "cargo install trunk",
+        "dev": "trunk serve",
+        "build": "trunk build --release"
+    },
+    "author": "Your Name",
+    "license": "MIT",
+    "dependencies": {
+        "dependency-name": "^1.0.0"
+    }
+}
+  

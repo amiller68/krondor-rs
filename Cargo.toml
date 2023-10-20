@@ -1,7 +1,10 @@
 [package]
 name = "krondor"
-version = "0.0.0"
+version = "1.0.0"
 edition = "2021"
+
+[target.'cfg(target_arch = "wasm32")'.package]
+name = "krondor-wasm"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 [lib]
@@ -10,8 +13,6 @@ crate-type = ["cdylib", "rlib"]
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
-ethers = { version =  "2.0.10", features = ["rustls"] }
-futures-util = "0.3.28"
 reqwest = { version = "0.11.20", features = ["multipart", "stream", "json"] }
 url = "2.4.1"
 leptos = { version = "^0.5", features = ["csr", "nightly"] }
@@ -29,9 +30,6 @@ chrono = { version = "0.4.31", features = ["serde"] }
 multihash = "=0.18"
 sha3 = "0.10.8"
 bytes = "1.5.0"
-lazy_static = "1.4.0"
-rand = "0.8.5"
-gloo = "0.10.0"
 
 [target.'cfg(target_arch = "wasm32")'.dependencies]
 getrandom = { version = "0.2", features = ["js"] }

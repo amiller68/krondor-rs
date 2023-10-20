@@ -1,5 +1,4 @@
-use crate::env::APP_NAME;
-use crate::types::{Item, Cid};
+use crate::types::{Item, SerializedCid};
 use async_trait::async_trait;
 use leptos::*;
 use leptos_struct_table::*;
@@ -30,9 +29,7 @@ pub fn Index() -> impl IntoView {
 
     view! {
         <div>
-            <p>Welcome to {APP_NAME}</p>
-            <p>"You're currently using a static wasm-app hosted on IPFS."</p>
-            <p>"This is just a jumble of stuff im hosting here: "</p>
+            <h2>"This is just a jumble of stuff im hosting here: "</h2>
             {move || match item_resource.get() {
                 None => view! { <p>"Loading..."</p> }.into_view(),
                 Some(_) => view! {<ItemRowTable items=items/>}.into_view()
@@ -58,7 +55,7 @@ impl IntoView for Item {
 #[derive(TableComponent, Serialize, Deserialize, Debug, Clone, Default, PartialEq)]
 struct ItemRow {
     #[table(key, skip)]
-    id: Cid,
+    id: SerializedCid,
     item: Item,
     date: String,
 }

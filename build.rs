@@ -4,10 +4,14 @@ use std::env;
 use std::fs::File;
 use std::io::Write;
 
-const CONFIG_PATH: &str = ".env.config";
+const CONFIG_PATH: &str = "app.config";
 const ENV_RS_PATH: &str = "./src/env.rs";
 
 fn main() {
+    if cfg!(target_arch = "wasm32") {
+        println!("cargo:rustc-env=EXE_NAME=krondor_web");
+    }
+
     // Load Build Parameters
     println!("cargo:rerun-if-changed=.env.config");
     let mut f = File::create(ENV_RS_PATH).unwrap();

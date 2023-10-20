@@ -1,11 +1,11 @@
 use chrono::{DateTime, Utc};
 use serde::{Deserialize, Serialize};
 
-use super::Cid;
+use super::SerializedCid;
 
 #[derive(Debug, Clone, PartialEq, Default, Serialize, Deserialize)]
 pub struct Item {
-    cid: Cid,
+    cid: SerializedCid,
     name: String,
     date: DateTime<Utc>, 
     title: String,
@@ -16,24 +16,22 @@ pub struct Item {
 
 impl Item {
     pub fn new(
-        cid: Cid,
+        cid: SerializedCid,
         name: &str,
-        date: DateTime<Utc>,
         title: &str,
         description: &str,
-        render: &str,
     ) -> Self {
         Self {
             cid,
             name: name.to_string(),
-            date,
+            date: Utc::now(),
             title: title.to_string(),
             description: description.to_string(),
-            render: render.to_string(),
+            render: "markdown".to_string(),
         }
     }
 
-    pub fn cid(&self) -> &Cid {
+    pub fn cid(&self) -> &SerializedCid {
         &self.cid
     }
 

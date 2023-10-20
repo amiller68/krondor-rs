@@ -13,13 +13,14 @@ pub fn get_item_url(name: &str) -> KrondorResult<String> {
     Ok(url)
 }
 
-pub async fn get_manifest() -> KrondorResult<Manifest> {
-    let url = web_sys::window()
-        .expect("window")
-        .location()
-        .origin()
-        .expect("href");
+pub fn get_manifest_url() -> KrondorResult<String> {
+    let url = web_sys::window().expect("window").origin();
     let url = format!("{}/{}", url, APP_MANIFEST_FILE);
+    Ok(url)
+}
+
+pub async fn get_manifest() -> KrondorResult<Manifest> {
+    let url = get_manifest_url()?;
     let manifest = reqwest::get(url)
         .await
         .map_err(KrondorError::default)?
@@ -33,15 +34,7 @@ pub async fn get_manifest() -> KrondorResult<Manifest> {
 }
 
 pub async fn get_item_text(name: &str) -> KrondorResult<String> {
-    gloo::console::log!("get_item_text: {}", name);
-    let url = web_sys::window()
-        .expect("window")
-        .location()
-        .href()
-        .expect("href");
-    // Strip off the cid from the url
-    let url = url.split('/').take(3).collect::<Vec<&str>>().join("/");
-    let url = format!("{}/{}/{}", url, APP_POSTS_DIR, name);
+    let url = get_item_url(name)?; 
     reqwest::get(url)
         .await
         .map_err(KrondorError::default)?

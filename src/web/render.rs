@@ -53,6 +53,7 @@ async fn get_item_view(item: Item) -> ItemView {
                 .await
                 .expect("text");
             let title  = item.title();
+            let date = item.date();
             let markdown = markdown_to_html(text);
 
             let url = get_url().expect("url");
@@ -62,9 +63,10 @@ async fn get_item_view(item: Item) -> ItemView {
                 r#"
                 <div class="prose max-w-none">
                     <h1>{}</h1>
+                    <p>{}</p>
                     {}
                 </div>"#,
-                title, markdown
+                title, date, markdown
             )
             .to_string();
             ItemView(inner_html)
@@ -72,19 +74,6 @@ async fn get_item_view(item: Item) -> ItemView {
         _ => ItemView(String::new()),
     }
 }
-
-// String {
-//     let content = match item {
-//         Item::Post(post) => {
-//             let text = get_item_text(post.collection(), post.name()).await.expect("text");
-//             let html = markdown_to_html(text);
-
-//             html
-//         }
-//         _ => String::new(),
-//     };
-//     content
-// }
 
 fn markdown_to_html(content: String) -> String {
     let mut options = Options::empty();

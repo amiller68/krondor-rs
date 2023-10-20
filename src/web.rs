@@ -8,6 +8,8 @@ mod utils;
 use index::Index;
 use render::Render;
 
+use crate::env::{APP_NAME, APP_VERSION};
+
 pub struct App;
 
 impl App {
@@ -25,14 +27,34 @@ impl App {
 fn WebApp() -> impl IntoView {
     view! {
         <div>
-            <h1>"Hello, World!"</h1>
-
+        // Put Home and About links on the other side of the header
+            <h1>{APP_NAME} {APP_VERSION}</h1>
+            <div>
+                <a href="/">"Home"</a>
+                <a href="/about">"About"</a>
+            </div>
         </div>
         <Router>
             <Routes>
                 <Route path="/" view=Index/>
                 <Route path="/:name" view=Render/>
+                <Route path="/about" view=About/>
             </Routes>
         </Router>
+    }
+}
+
+#[component]
+fn About() -> impl IntoView {
+    view! {
+        <div>
+            <h1>"About Me "</h1>
+            <p> I write software and like to write things. </p>
+            <p> Try and find me on: </p>
+            <ul>
+                <li> <a href="https://github.com/amiller68">Github</a> </li>
+                <li> <a href="https://twitter.com/lord_krondor">Twitter</a> </li>
+            </ul>
+        </div>
     }
 }
