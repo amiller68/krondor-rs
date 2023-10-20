@@ -1,8 +1,6 @@
 use std::path::PathBuf;
 
-use crate::env::{
-    APP_MANIFEST_FILE, APP_POSTS_DIR, APP_DIST_DIR
-};
+use crate::env::{APP_DIST_DIR, APP_MANIFEST_FILE, APP_POSTS_DIR};
 use crate::error::{KrondorError, KrondorResult};
 use crate::types::Manifest;
 

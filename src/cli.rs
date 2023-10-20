@@ -1,11 +1,11 @@
 mod app;
 mod fs;
 
-use app::{AppArgs, Parser, Command};
-pub use app:: App;
+pub use app::App;
+use app::{AppArgs, Command, Parser};
 
 use crate::error::KrondorResult;
-use crate::types::{Manifest, Item, SerializedCid};
+use crate::types::{Item, Manifest, SerializedCid};
 
 impl Default for App {
     fn default() -> Self {
@@ -40,12 +40,7 @@ impl App {
                     }
                 };
                 let mut manifest = Manifest::load(&fs::manifest_path())?;
-                let item = Item::new(
-                    cid,
-                    &post.name,
-                    &post.title,
-                    &post.description,
-                );
+                let item = Item::new(cid, &post.name, &post.title, &post.description);
                 manifest.add_item(item);
                 manifest.save(&fs::manifest_path())?;
                 Ok(())

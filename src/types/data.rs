@@ -1,8 +1,8 @@
 #[cfg(not(target_arch = "wasm32"))]
 use {
-    std::path::Path,
-    crate::error::{KrondorError, KrondorResult},
     crate::env,
+    crate::error::{KrondorError, KrondorResult},
+    std::path::Path,
 };
 
 use serde::{Deserialize, Serialize};
@@ -17,10 +17,7 @@ pub struct Manifest {
 
 impl Manifest {
     pub fn item(&self, name: &str) -> Option<Item> {
-        self.items
-            .iter()
-            .find(|i| i.name() == name)
-            .cloned()
+        self.items.iter().find(|i| i.name() == name).cloned()
     }
 }
 
@@ -34,10 +31,7 @@ impl Manifest {
     }
     pub fn add_item(&mut self, item: Item) {
         // Check if the item already exists
-        if self
-            .item(item.name())
-            .is_some()
-        {
+        if self.item(item.name()).is_some() {
             return;
         }
         self.items.push(item);

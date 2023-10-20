@@ -1,4 +1,4 @@
-use crate::env::{APP_POSTS_DIR, APP_MANIFEST_FILE};
+use crate::env::{APP_MANIFEST_FILE, APP_POSTS_DIR};
 use crate::error::{KrondorError, KrondorResult};
 use crate::types::Manifest;
 
@@ -34,7 +34,7 @@ pub async fn get_manifest() -> KrondorResult<Manifest> {
 }
 
 pub async fn get_item_text(name: &str) -> KrondorResult<String> {
-    let url = get_item_url(name)?; 
+    let url = get_item_url(name)?;
     reqwest::get(url)
         .await
         .map_err(KrondorError::default)?

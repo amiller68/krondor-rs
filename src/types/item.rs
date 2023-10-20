@@ -7,7 +7,7 @@ use super::SerializedCid;
 pub struct Item {
     cid: SerializedCid,
     name: String,
-    date: DateTime<Utc>, 
+    date: DateTime<Utc>,
     title: String,
     description: String,
     // TODO: this should be a trait or something
@@ -15,12 +15,7 @@ pub struct Item {
 }
 
 impl Item {
-    pub fn new(
-        cid: SerializedCid,
-        name: &str,
-        title: &str,
-        description: &str,
-    ) -> Self {
+    pub fn new(cid: SerializedCid, name: &str, title: &str, description: &str) -> Self {
         Self {
             cid,
             name: name.to_string(),

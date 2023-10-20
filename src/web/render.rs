@@ -49,10 +49,8 @@ async fn get_item_view(item: Item) -> ItemView {
     // let name = item.clone().name();
     match item.render() {
         "markdown" => {
-            let text = get_item_text(item.name())
-                .await
-                .expect("text");
-            let title  = item.title();
+            let text = get_item_text(item.name()).await.expect("text");
+            let title = item.title();
             let date = item.date();
             let markdown = markdown_to_html(text);
 

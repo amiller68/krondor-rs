@@ -27,8 +27,8 @@ impl SerializedCid {
 
     #[cfg(not(target_arch = "wasm32"))]
     pub fn from_file(path: &std::path::Path) -> KrondorResult<Self> {
-        use sha3::{Digest, Sha3_256};
         use multihash::Multihash;
+        use sha3::{Digest, Sha3_256};
         // Read the file as bytes
         // Open the file
         let mut file = std::fs::File::open(path).map_err(KrondorError::default)?;
