@@ -27,7 +27,6 @@ impl App {
 fn WebApp() -> impl IntoView {
     view! {
         <div>
-        // Put Home and About links on the other side of the header
             <h1>{APP_NAME} {APP_VERSION}</h1>
             <div>
                 <a href="/">"Home"</a>

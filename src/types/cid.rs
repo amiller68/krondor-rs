@@ -2,8 +2,10 @@
 use std::convert::{From, TryFrom};
 
 use cid::Cid;
-use leptos::{IntoView, View};
 use serde::{Deserialize, Deserializer, Serialize, Serializer};
+
+#[cfg(target_arch = "wasm32")]
+use leptos::{IntoView, View};
 
 use crate::error::{KrondorError, KrondorResult};
 
@@ -50,6 +52,7 @@ impl From<SerializedCid> for Cid {
     }
 }
 
+#[cfg(target_arch = "wasm32")]
 impl IntoView for SerializedCid {
     fn into_view(self) -> View {
         use leptos::leptos_dom::Text;

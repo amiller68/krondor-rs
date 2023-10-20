@@ -13,8 +13,16 @@
       "cid": "bafkrmieiu6wtkwroq6qpimt5qkuj2iwiui6rmz26mqbrlyp2rf5ey6qc6i",
       "name": "v1.0.0.md",
       "date": "2023-10-20T05:43:19.536109Z",
-      "title": "Dumber is Better",
+      "title": "V1: Dumber is Better",
       "description": "",
+      "render": "markdown"
+    },
+    {
+      "cid": "bafkrmif2d6hszoihbn6wt6pl3ho2n3i7mbddaj3saeweo4yiad4dxqowkq",
+      "name": "this_machine.md",
+      "date": "2023-10-20T17:27:44.546586309Z",
+      "title": "this machine",
+      "description": "i have a heart condition. this is a reflection i had after a routine checkup",
       "render": "markdown"
     }
   ]

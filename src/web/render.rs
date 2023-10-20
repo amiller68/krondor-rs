@@ -52,19 +52,19 @@ async fn get_item_view(item: Item) -> ItemView {
             let text = get_item_text(item.name()).await.expect("text");
             let title = item.title();
             let date = item.date();
+            let description = item.description();
             let markdown = markdown_to_html(text);
 
             let url = get_url().expect("url");
             let markdown = markdown.replace("src=\"./", &format!("src=\"{}/posts/", url));
 
             let inner_html = format!(
-                r#"
-                <div class="prose max-w-none">
-                    <h1>{}</h1>
-                    <p>{}</p>
-                    {}
-                </div>"#,
-                title, date, markdown
+                r#"<div class="prose max-w-none">
+                    <h1>{title}</h1>
+                    <p><em>{description}</em></p>
+                    <p><strong>{date}</strong></p>
+                    {markdown}
+                </div>"#
             )
             .to_string();
             ItemView(inner_html)
