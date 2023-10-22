@@ -1,0 +1,23 @@
+<!DOCTYPE html><html><head>
+    <style>
+      body {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+      }
+    </style>
+    <title>Wasm Game of Life</title>
+  
+<link rel="preload" href="./assets/wasm-life-rs-aec3ec038e69687_bg.wasm" as="fetch" type="application/wasm" crossorigin="">
+<link rel="modulepreload" href="./assets/wasm-life-rs-aec3ec038e69687.js"></head>
+  <body>
+    <h1>Wasm Game Of Life</h1>
+    <canvas id="game-canvas"></canvas>
+  
+<script type="module">import init from './assets/wasm-life-rs-aec3ec038e69687.js';init('./assets/wasm-life-rs-aec3ec038e69687_bg.wasm');</script></body></html>

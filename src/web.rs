@@ -29,8 +29,9 @@ fn WebApp() -> impl IntoView {
         <div>
             <h1>{APP_NAME} {APP_VERSION}</h1>
             <div>
-                <a href="/">"Home"</a>
-                <a href="/about">"About"</a>
+                <a href="/">Home</a>
+                <a href="/about">About</a>
+                <a href="./posts/assets">Assets</a>
             </div>
         </div>
         <Router>

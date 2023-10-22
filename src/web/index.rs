@@ -42,7 +42,7 @@ impl IntoView for Item {
     fn into_view(self) -> View {
         let name = self.name().to_string();
         let title = self.title().to_string();
-        let href = format!("{}", name);
+        let href = name;
         let html_element = view! {
             <a href=href>
                 <h3>{title}</h3>

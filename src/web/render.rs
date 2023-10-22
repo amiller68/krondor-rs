@@ -68,8 +68,18 @@ async fn get_item_view(item: Item) -> ItemView {
             )
             .to_string();
             ItemView(inner_html)
+        },
+        _ => {
+            // Redirect to /posts/{name}
+            let url = get_url().expect("url");
+            let url = format!("{}/posts/{}", url, item.name());
+            web_sys::window()
+                .expect("window")
+                .location()
+                .set_href(&url)
+                .expect("set href");
+            ItemView("".to_string())
         }
-        _ => ItemView(String::new()),
     }
 }
 
