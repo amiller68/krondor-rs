@@ -42,7 +42,8 @@ impl IntoView for Index {
                     Some(_) => view! {<ItemRowTable items=items/>}.into_view()
                 }}
             </div>
-        }.into_view()
+        }
+        .into_view()
     }
 }
 
@@ -50,7 +51,7 @@ impl IntoView for Item {
     fn into_view(self) -> View {
         let name = self.name().to_string();
         let title = self.title().to_string();
-        let href = format!("?route=posts&name={}", name); 
+        let href = format!("?route=posts&name={}", name);
         let html_element = view! {
             <InternalRoute query=href msg=title/>
         };

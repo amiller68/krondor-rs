@@ -24,7 +24,8 @@ impl IntoView for RenderItem {
                     Some(iv) => iv.into_view()
                 }}
             </div>
-        }.into_view()
+        }
+        .into_view()
     }
 }
 

@@ -40,11 +40,11 @@ fn InternalRoute(query: String, msg: String) -> impl IntoView {
             let url = a_ref.href();
             let window = web_sys::window().expect("window");
             window.location().set_href(&url).expect("href");
-        }
+        },
     );
-    
+
     view! {
-        <a 
+        <a
             href=url
             ref=a_href_ref
         >
@@ -93,12 +93,10 @@ fn match_route(manifest: Manifest, route: Option<String>, name: Option<String>) 
     logging::log!("name: {:?}", name);
     match route {
         Some(route) => match route.as_str() {
-            "posts" => {
-                match name {
-                    Some(name) => InternalRoute::RenderItem(manifest.item(&name)),
-                    _ => InternalRoute::Index(manifest),
-                }
-            }
+            "posts" => match name {
+                Some(name) => InternalRoute::RenderItem(manifest.item(&name)),
+                _ => InternalRoute::Index(manifest),
+            },
             "about" => InternalRoute::About,
             _ => InternalRoute::Index(manifest),
         },
@@ -123,7 +121,7 @@ fn InternalRouter() -> impl IntoView {
     );
 
     view! {
-        <div> 
+        <div>
             {move || match component_view.get() {
                 None => view! { <p>"Loading..."</p> }.into_view(),
                 Some(iv) => iv.into_view()
@@ -137,16 +135,17 @@ struct About;
 
 impl IntoView for About {
     fn into_view(self) -> View {
-    view! {
-        <div>
-            <h1>"About Me "</h1>
-            <p> I write software and like to write things. </p>
-            <p> Try and find me on: </p>
-            <ul>
-                <li> <a href="https://github.com/amiller68">Github</a> </li>
-                <li> <a href="https://twitter.com/lord_krondor">Twitter</a> </li>
-            </ul>
-        </div>
-    }.into_view()
-}
+        view! {
+            <div>
+                <h1>"About Me "</h1>
+                <p> I write software and like to write things. </p>
+                <p> Try and find me on: </p>
+                <ul>
+                    <li> <a href="https://github.com/amiller68">Github</a> </li>
+                    <li> <a href="https://twitter.com/lord_krondor">Twitter</a> </li>
+                </ul>
+            </div>
+        }
+        .into_view()
+    }
 }
