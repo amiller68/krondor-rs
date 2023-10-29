@@ -1,5 +1,4 @@
 use leptos::*;
-use leptos_router::*;
 use pulldown_cmark::{html, Options, Parser};
 use serde::{Deserialize, Serialize};
 
@@ -7,27 +6,25 @@ use crate::types::Item;
 
 use super::utils::{get_item_text, get_url};
 
-#[component]
-pub fn Render() -> impl IntoView {
-    let params = use_params_map();
-    let item_view = create_resource(
-        || (),
-        move |_| async move {
-            let name = move || params.with(|params| params.get("name").unwrap().to_string());
-            let manifest = super::utils::get_manifest().await.expect("manifest");
-            let name = name();
-            let item = manifest.item(&name).expect("item");
-            get_item_view(item).await
-        },
-    );
+#[derive(Serialize, Deserialize, Clone)]
+pub struct RenderItem(pub Option<Item>);
 
-    view! { ,
-        <div>
-            {move || match item_view.get() {
-                None => view! { <p>"Loading..."</p> }.into_view(),
-                Some(iv) => iv.into_view()
-            }}
-        </div>
+impl IntoView for RenderItem {
+    fn into_view(self) -> View {
+        let item = create_rw_signal(self.0.expect("item"));
+        let item_view = create_resource(
+            || (),
+            move |_| async move { get_item_view(item.get()).await },
+        );
+
+        view! {
+            <div>
+                {move || match item_view.get() {
+                    None => view! { <p>"Loading..."</p> }.into_view(),
+                    Some(iv) => iv.into_view()
+                }}
+            </div>
+        }.into_view()
     }
 }
 
@@ -68,7 +65,7 @@ async fn get_item_view(item: Item) -> ItemView {
             )
             .to_string();
             ItemView(inner_html)
-        },
+        }
         _ => {
             // Redirect to /posts/{name}
             let url = get_url().expect("url");

@@ -15,6 +15,8 @@ anyhow = "1.0.75"
 serde = { version = "1.0.188", features = ["derive"] }
 cid = "0.10.1"
 chrono = { version = "0.4.31", features = ["serde"] }
+gloo = "0.10.0"
+leptos-use = "0.8.1"
 
 [target.'cfg(target_arch = "wasm32")'.dependencies]
 getrandom = { version = "0.2", features = ["js"] }
