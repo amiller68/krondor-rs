@@ -106,7 +106,6 @@ fn match_route(manifest: Manifest, route: Option<String>, name: Option<String>) 
 
 #[component]
 fn InternalRouter() -> impl IntoView {
-    // Register inner components
     let (route, _) = create_query_signal::<String>("route");
     let (name, _) = create_query_signal::<String>("name");
 
