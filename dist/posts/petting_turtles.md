@@ -1,1 +1,0 @@
-<img src="./assets/petting_turtles.jpg" alt="turtles" width="400"/>
