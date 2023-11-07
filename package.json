@@ -7,9 +7,6 @@
     "dev": "trunk serve",
     "build": "trunk build --release"
   },
-  "author": "Your Name",
-  "license": "MIT",
-  "dependencies": {
-    "dependency-name": "^1.0.0"
-  }
+  "author": "Al Miller <al@krondor.org>",
+  "license": "MIT"
 }
