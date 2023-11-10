@@ -1,34 +1,73 @@
-use clap::{arg, command, Args, Subcommand};
+pub use super::args::{Args, Command, Parser};
 
-pub use clap::Parser;
+use crate::error::KrondorResult;
+use crate::types::{Item, Manifest};
 
-pub struct App {
-    pub(crate) args: AppArgs,
+pub struct App;
+
+impl App {
+    pub fn run() {
+        capture_error(Self::run_result()).ok();
+    }
+
+    fn run_result() -> KrondorResult<()> {
+        let args = Args::parse();
+
+        match args.command {
+            Command::Init => {
+                println!("Initializing new space...");
+                Manifest::new()
+            }
+            Command::New => {
+                println!("Creating new post...");
+                let mut manifest = Manifest::load()?;
+                // Prompt for name, title, description
+                let name = prompt_string("Name");
+                let title = prompt_string("Title");
+                let description = prompt_string("Description");
+                let item = Item::from_disk(&name, &title, &description)?;
+
+                println!("Cid: {}", item.cid().to_string());
+                println!("Detected Render: {}", item.render().to_string());
+
+                if prompt_bool("Continue? (y/n)") {
+                    manifest.add_item(item);
+                    manifest.save()?;
+                }
+                Ok(())
+            }
+        }
+    }
 }
 
-#[derive(Parser, Debug)]
-#[command(author, version, about, long_about = None)]
-pub struct AppArgs {
-    /// Command passed
-    #[command(subcommand)]
-    pub command: Command,
+fn capture_error<T>(result: KrondorResult<T>) -> KrondorResult<T> {
+    match result {
+        Ok(v) => Ok(v),
+        Err(e) => {
+            println!("Error Occured: {}", e);
+            Err(e)
+        }
+    }
 }
 
-#[derive(Debug, Subcommand, Clone)]
-pub enum Command {
-    Init,
-    New(NewSubcommand),
+fn prompt_string(prompt: &str) -> String {
+    use std::io::{stdin, stdout, Write};
+    let mut s = String::new();
+    print!("{}: ", prompt);
+    let _ = stdout().flush();
+    stdin()
+        .read_line(&mut s)
+        .expect("Did not enter a correct string");
+    s.trim().to_string()
 }
 
-#[derive(Debug, Args, Clone)]
-pub struct NewSubcommand {
-    /// Name of the new post
-    #[arg(short, long)]
-    pub name: String,
-    /// Title of the new post
-    #[arg(short, long)]
-    pub title: String,
-    /// Description of the new gallery
-    #[arg(short, long)]
-    pub description: String,
+fn prompt_bool(prompt: &str) -> bool {
+    use std::io::{stdin, stdout, Write};
+    let mut s = String::new();
+    print!("{}: ", prompt);
+    let _ = stdout().flush();
+    stdin()
+        .read_line(&mut s)
+        .expect("Did not enter a correct string");
+    s.trim().to_lowercase() == "y"
 }

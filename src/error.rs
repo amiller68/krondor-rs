@@ -1,43 +1,27 @@
-use anyhow::Error;
-
 pub type KrondorResult<T> = std::result::Result<T, KrondorError>;
 
-pub struct KrondorError {
-    kind: KrondorErrorKind,
-}
+#[derive(Debug, thiserror::Error)]
+pub enum KrondorError {
+    // Disk I/O errors
+    #[cfg(not(target_arch = "wasm32"))]
+    #[error("Disk I/O error: {0}")]
+    Io(#[from] std::io::Error),
 
-impl KrondorError {
-    pub fn default(err: impl Into<Error>) -> Self {
-        Self {
-            kind: KrondorErrorKind::Default(err.into()),
-        }
-    }
-    pub fn msg(msg: &str) -> Self {
-        Self {
-            kind: KrondorErrorKind::Msg(msg.to_string()),
-        }
-    }
-}
+    // Cid errors
+    #[error("Cid error: {0}")]
+    Cid(#[from] cid::Error),
 
-impl std::fmt::Debug for KrondorError {
-    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        match &self.kind {
-            KrondorErrorKind::Default(err) => write!(f, "{:?}", err),
-            KrondorErrorKind::Msg(msg) => write!(f, "{}", msg),
-        }
-    }
-}
+    #[error("Multihash error: {0}")]
+    Multihash(#[from] cid::multihash::Error),
 
-impl std::fmt::Display for KrondorError {
-    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        match &self.kind {
-            KrondorErrorKind::Default(err) => write!(f, "{}", err),
-            KrondorErrorKind::Msg(msg) => write!(f, "{}", msg),
-        }
-    }
-}
+    // Serde errors
+    #[error("Serde error: {0}")]
+    Serde(#[from] serde_json::Error),
 
-pub enum KrondorErrorKind {
-    Default(Error),
-    Msg(String),
+    #[error("Reqwest error: {0}")]
+    Request(#[from] reqwest::Error),
+
+    // User triggered errors
+    #[error("Invalid Request: {0}")]
+    InvalidRequest(String),
 }

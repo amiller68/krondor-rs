@@ -1,7 +1,5 @@
-mod cid;
-mod data;
 mod item;
+mod manifest;
 
-pub use cid::SerializedCid;
-pub use data::Manifest;
-pub use item::Item;
+pub use item::{Item, Render};
+pub use manifest::Manifest;

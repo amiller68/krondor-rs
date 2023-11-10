@@ -1,18 +1,37 @@
 use async_trait::async_trait;
+use cid::Cid;
 use leptos::*;
 use leptos_struct_table::*;
 use serde::{Deserialize, Serialize};
 
-use super::InternalRoute;
+use super::{InternalLink, Page, PageContext};
 
-use crate::types::{Item, Manifest, SerializedCid};
+use crate::types::Item;
 
 #[derive(Serialize, Deserialize, Clone)]
-pub struct Index(pub Manifest);
+pub struct IndexPage(PageContext);
 
-impl IntoView for Index {
+impl Page for IndexPage {
+    // fn name() -> &'static str {
+    //     "index"
+    // }
+    fn ctx(&self) -> &PageContext {
+        &self.0
+    }
+    fn from_ctx(ctx: PageContext) -> Box<dyn Page> {
+        Box::new(Self(ctx))
+    }
+    // fn clone_box(&self) -> Box<dyn Page> {
+    //     Box::new(self.clone())
+    // }
+    fn into_view_ref(&self) -> View {
+        self.clone().into_view()
+    }
+}
+
+impl IntoView for IndexPage {
     fn into_view(self) -> View {
-        let manifest = create_rw_signal(self.0);
+        let manifest = create_rw_signal(self.0.manifest().clone());
         let items = create_rw_signal(vec![]);
         // High level fetch resource
         let resource = create_resource(
@@ -37,7 +56,6 @@ impl IntoView for Index {
                 <p><strong>"Hi there, this is just some stuff i like to work on: "</strong></p>
                 <p><strong>"- Al"</strong></p>
                 {move || match resource.get() {
-                    // TODO: Loading animation
                     None => view! { <p>"Loading..."</p> }.into_view(),
                     Some(_) => view! {<ItemRowTable items=items/>}.into_view()
                 }}
@@ -47,23 +65,11 @@ impl IntoView for Index {
     }
 }
 
-impl IntoView for Item {
-    fn into_view(self) -> View {
-        let name = self.name().to_string();
-        let title = self.title().to_string();
-        let href = format!("?route=posts&name={}", name);
-        let html_element = view! {
-            <InternalRoute query=href msg=title/>
-        };
-        html_element.into_view()
-    }
-}
-
 #[derive(TableComponent, Serialize, Deserialize, Debug, Clone, Default, PartialEq)]
 struct ItemRow {
     #[table(key, skip)]
-    id: SerializedCid,
-    item: Item,
+    id: Cid,
+    item: ItemLink,
     date: String,
 }
 
@@ -74,8 +80,23 @@ impl From<&Item> for ItemRow {
         let date = item.date().to_string();
         Self {
             id,
-            item: item.clone(),
+            item: ItemLink(item.clone()),
             date,
         }
     }
 }
+
+impl IntoView for ItemLink {
+    fn into_view(self) -> View {
+        let name = self.0.name().to_string();
+        let title = self.0.title().to_string();
+        let href = format!("?route=items&query={}", name);
+        let html_element = view! {
+            <InternalLink query=href msg=title/>
+        };
+        html_element.into_view()
+    }
+}
+
+#[derive(Serialize, Deserialize, Debug, Clone, Default, PartialEq)]
+pub struct ItemLink(Item);

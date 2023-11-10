@@ -1,19 +1,16 @@
-#![allow(dead_code)]
-
 mod env;
-pub mod error;
+mod error;
 mod types;
+pub mod utils;
 
 #[cfg(not(target_arch = "wasm32"))]
-mod cli;
+pub mod cli;
 
 #[cfg(target_arch = "wasm32")]
-mod web;
+pub mod web;
 
-pub mod app {
-    // Interfaces
-    #[cfg(not(target_arch = "wasm32"))]
-    pub use crate::cli::App;
-    #[cfg(target_arch = "wasm32")]
-    pub use crate::web::App;
-}
+#[cfg(not(target_arch = "wasm32"))]
+pub use cli::App;
+
+#[cfg(target_arch = "wasm32")]
+pub use web::App;

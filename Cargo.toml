@@ -1,6 +1,6 @@
 [package]
 name = "krondor"
-version = "1.0.0"
+version = "1.1.0"
 edition = "2021"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
@@ -11,24 +11,24 @@ crate-type = ["cdylib", "rlib"]
 
 [dependencies]
 serde_json = "1.0.107"
-anyhow = "1.0.75"
 serde = { version = "1.0.188", features = ["derive"] }
-cid = "0.10.1"
+cid = { version =  "^0.10", features = ["serde-codec"] }
 chrono = { version = "0.4.31", features = ["serde"] }
-gloo = "0.10.0"
 leptos-use = "0.8.1"
+leptos = { version = "^0.5", features = ["csr", "nightly"] }
+thiserror = "1.0.50"
+reqwest = { version = "0.11.20", features = ["multipart", "stream", "json"] }
 
 [target.'cfg(target_arch = "wasm32")'.dependencies]
 getrandom = { version = "0.2", features = ["js"] }
 console_error_panic_hook = "0.1.7"
-reqwest = { version = "0.11.20", features = ["multipart", "stream", "json"] }
 url = "2.4.1"
-leptos = { version = "^0.5", features = ["csr", "nightly"] }
 leptos-struct-table = "^0.4"
 web-sys = "0.3.64"
 async-trait = "0.1.73"
 leptos_router = { version = "^0.5", features = ["csr", "nightly"] }
 pulldown-cmark = "0.9.3"
+gloo = "0.10.0"
 
 [target.'cfg(not(target_arch = "wasm32"))'.dependencies]
 multihash = "=0.18"
