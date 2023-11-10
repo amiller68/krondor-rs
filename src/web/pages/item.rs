@@ -1,4 +1,5 @@
 use leptos::*;
+use leptos_use::use_event_listener;
 
 use serde::{Deserialize, Serialize};
 
@@ -67,6 +68,40 @@ async fn render_item_view(item: &Item) -> View {
             let url = get_item_url(item.name()).expect("url");
             let html = format!(r#"<img src="{url}"/>"#, url = url);
             view! { <div class="prose max-w-none"> {html} </div> }
+        }
+        Render::Mp3 => {
+            let url = get_item_url(item.name()).expect("url");
+            let audio_ref: NodeRef<html::Audio> = create_node_ref::<html::Audio>();
+            let button_ref: NodeRef<html::Button> = create_node_ref::<html::Button>();
+
+            audio_ref.on_load(move |_| {
+                let audio = audio_ref.get().expect("audio");
+                button_ref.on_load(move |_| {
+                    let button = button_ref.get().expect("button");
+                    button.set_inner_text("Play Audio");
+                    let _ = use_event_listener(button_ref, leptos::ev::click, move |_| {
+                        if audio.paused() {
+                            let _ = audio.play().expect("play");
+                            button.set_inner_text("Pause Audio");
+                        } else {
+                            audio.pause().expect("pause");
+                            button.set_inner_text("Play Audio");
+                        }
+                    });
+                });
+            });
+
+            view! {
+                <div class="prose max-w-none"> 
+                    <audio 
+                        node_ref=audio_ref
+                        src={url}
+                    />
+                    <button 
+                        node_ref=button_ref
+                    ></button>
+                </div>
+            }
         }
         Render::Blank => {
             view! { <div class="prose max-w-none"> </div> }

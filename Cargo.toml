@@ -14,8 +14,6 @@ serde_json = "1.0.107"
 serde = { version = "1.0.188", features = ["derive"] }
 cid = { version =  "^0.10", features = ["serde-codec"] }
 chrono = { version = "0.4.31", features = ["serde"] }
-leptos-use = "0.8.1"
-leptos = { version = "^0.5", features = ["csr", "nightly"] }
 thiserror = "1.0.50"
 reqwest = { version = "0.11.20", features = ["multipart", "stream", "json"] }
 
@@ -23,8 +21,10 @@ reqwest = { version = "0.11.20", features = ["multipart", "stream", "json"] }
 getrandom = { version = "0.2", features = ["js"] }
 console_error_panic_hook = "0.1.7"
 url = "2.4.1"
+leptos = { version = "^0.5", features = ["csr", "nightly"] }
+leptos-use = "0.8.1"
 leptos-struct-table = "^0.4"
-web-sys = "0.3.64"
+web-sys = { version = "^0.3", features = ["HtmlMediaElement"] }
 async-trait = "0.1.73"
 leptos_router = { version = "^0.5", features = ["csr", "nightly"] }
 pulldown-cmark = "0.9.3"

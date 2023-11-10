@@ -49,6 +49,7 @@ pub enum Render {
     Markdown,
     Html,
     Jpg,
+    Mp3,
     Blank,
 }
 
@@ -64,6 +65,7 @@ impl std::fmt::Display for Render {
             Self::Markdown => "Markdown",
             Self::Html => "Html",
             Self::Jpg => "Jpg",
+            Self::Mp3 => "Mp3",
             Self::Blank => "Blank",
         };
         write!(f, "{}", s)
@@ -78,6 +80,7 @@ impl From<std::path::PathBuf> for Render {
             "md" => Self::Markdown,
             "html" => Self::Html,
             "jpg" => Self::Jpg,
+            "mp3" => Self::Mp3,
             _ => Self::Blank,
         }
     }
