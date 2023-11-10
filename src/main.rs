@@ -1,7 +1,7 @@
 use krondor::App;
 
 #[cfg(not(target_arch = "wasm32"))]
-fn main() -> () {
+fn main() {
     App::run();
 }
 

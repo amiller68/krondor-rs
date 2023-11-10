@@ -16,7 +16,7 @@ impl App {
         match args.command {
             Command::Init => {
                 println!("Initializing new space...");
-                Manifest::new()
+                Manifest::new_space()
             }
             Command::New => {
                 println!("Creating new post...");
@@ -27,8 +27,8 @@ impl App {
                 let description = prompt_string("Description");
                 let item = Item::from_disk(&name, &title, &description)?;
 
-                println!("Cid: {}", item.cid().to_string());
-                println!("Detected Render: {}", item.render().to_string());
+                println!("Cid: {}", item.cid());
+                println!("Detected Render: {}", item.render());
 
                 if prompt_bool("Continue? (y/n)") {
                     manifest.add_item(item);

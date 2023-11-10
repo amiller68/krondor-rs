@@ -30,7 +30,7 @@ impl Default for Manifest {
 
 #[cfg(not(target_arch = "wasm32"))]
 impl Manifest {
-    pub fn new() -> KrondorResult<()> {
+    pub fn new_space() -> KrondorResult<()> {
         use crate::utils::fs;
         fs::init_space()?;
         Ok(())
