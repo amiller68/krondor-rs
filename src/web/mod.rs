@@ -1,5 +1,5 @@
 mod app;
-mod pages;
 mod components;
+mod pages;
 
 pub use app::App;

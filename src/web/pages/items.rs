@@ -4,14 +4,16 @@ use leptos_use::use_event_listener;
 use serde::{Deserialize, Serialize};
 
 use crate::types::{Item, Render};
+use crate::web::components::{ItemRow, ItemRowTable};
 use crate::utils::web::{fix_src, get_item_text, get_item_url, markdown_to_html};
 
 use super::{Page, PageContext};
 
 #[derive(Serialize, Deserialize, Clone)]
-pub struct ItemPage(PageContext);
+pub struct ItemsPage(PageContext);
 
-impl Page for ItemPage {
+
+impl Page for ItemsPage {
     fn ctx(&self) -> &PageContext {
         &self.0
     }
@@ -23,28 +25,52 @@ impl Page for ItemPage {
     }
 }
 
-impl IntoView for ItemPage {
+impl IntoView for ItemsPage {
     fn into_view(self) -> View {
+        let items: leptos::RwSignal<Vec<ItemRow>> = create_rw_signal(
+            self.0
+                .manifest()
+                .items
+                .iter()
+                .map(|item| {
+                    let item_row: ItemRow = item.into();
+                    item_row
+                })
+                .collect(),
+        );
         let item = create_rw_signal(
             self.0
                 .manifest()
-                .item(&self.0.query().clone().expect("query")),
+                .item(&self.0.query().clone().unwrap_or_default()),
         );
-        let item_view = create_rw_signal(None);
+        let page_view = create_rw_signal(None);
         let _render_view = create_resource(
             || (),
             move |_| async move {
-                let item = item.get().expect("item");
-                let iv = render_item_view(&item).await;
-                item_view.set(Some(iv));
+                match item.get() {
+                    None => {
+                        gloo::console::log!("No item found");
+                        page_view.set(Some(view! { 
+                            <div>
+                                <p><strong>"Hi there, this is just some stuff i like to work on: "</strong></p>
+                                <p><strong>"- Al"</strong></p>
+                                <ItemRowTable items=items/>
+                            </div>
+                        }.into_view()));
+                    }
+                    Some(item) => {
+                        let iv = render_item_view(&item).await;
+                        page_view.set(Some(iv));
+                    }
+                }
             },
         );
 
         view! {
             <div>
-                {move || match item_view.get() {
+                {move || match page_view.get() {
                     None => view! { <p>"Loading..."</p> }.into_view(),
-                    Some(iv) => iv.into_view()
+                    Some(pv) => pv.into_view()
                 }}
             </div>
         }
@@ -92,12 +118,12 @@ async fn render_item_view(item: &Item) -> View {
             });
 
             view! {
-                <div class="prose max-w-none"> 
-                    <audio 
+                <div class="prose max-w-none">
+                    <audio
                         node_ref=audio_ref
                         src={url}
                     />
-                    <button 
+                    <button
                         node_ref=button_ref
                     ></button>
                 </div>
@@ -117,56 +143,3 @@ async fn render_item_view(item: &Item) -> View {
     }
     .into_view()
 }
-
-// impl IntoView for Item {
-//     fn into_view() -> View {
-
-//         Self(content.into())
-//     }
-// }
-
-// struct SerializableIntoView(Box<dyn IntoView>);
-
-// struct SerializableRenderableItem(Box<dyn RenderableItem>);
-
-// impl Clone for SerializableRenderableItem {
-//     fn clone(&self) -> Self {
-//         SerializablePage(self.0.clone_box())
-//     }
-// }
-
-// impl IntoView for SerializableRenderableItem {
-//     fn into_view(self) -> View {
-//         // Use a reference to call `into_view_ref`
-//         self.0.as_ref().into_view_ref()
-//     }
-// }
-
-// impl Serialize for SerializablePage {
-//     fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-//     where
-//         S: Serializer,
-//     {
-//         // Extract the content from the trait object
-//         let ctx = self.0.ctx();
-//         // Serialize the context
-//         let mut state = serializer.serialize_struct("PageContext", 3)?;
-//         state.serialize_field("manifest", ctx.manifest())?;
-//         state.serialize_field("route", ctx.route())?;
-//         state.serialize_field("name", ctx.name())?;
-//         state.end()
-//     }
-// }
-
-// impl<'de> Deserialize<'de> for SerializablePage {
-//     fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
-//     where
-//         D: serde::Deserializer<'de>,
-//     {
-//         // Deserialize the context
-//         let ctx = PageContext::deserialize(deserializer)?;
-//         // Create a new page from the context
-//         let page = IndexPage::from_ctx(ctx);
-//         Ok(SerializablePage(page))
-//     }
-// }

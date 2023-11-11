@@ -1,12 +1,9 @@
 use leptos::*;
 use serde::{Deserialize, Serialize};
 
-use super::{InternalLink, Page, PageContext};
-use crate::web::components::item_table::ItemRow;
-use crate::web::components::item_table::ItemRowTable;
-use crate::types::Item;
+use super::{Page, PageContext};
 
-#[derive(Serialize, Deserialize, Clone)]
+#[derive(Clone, Serialize, Deserialize)]
 pub struct IndexPage(PageContext);
 
 impl Page for IndexPage {
@@ -23,21 +20,15 @@ impl Page for IndexPage {
 
 impl IntoView for IndexPage {
     fn into_view(self) -> View {
-        let manifest = create_rw_signal(self.0.manifest().clone());
-        let items: leptos::RwSignal<Vec<ItemRow>> = create_rw_signal(self.0.manifest()
-            .items
-            .iter()
-            .map(|item| {
-                let item_row: ItemRow = item.into();
-                item_row
-            })
-            .collect());
-
         view! {
             <div>
-                <p><strong>"Hi there, this is just some stuff i like to work on: "</strong></p>
-                <p><strong>"- Al"</strong></p>
-                <ItemRowTable items=items/>
+                <h1>"About Me "</h1>
+                <p> I write software and like to write things. </p>
+                <p> Try and find me on: </p>
+                <ul>
+                    <li> <a href="https://github.com/amiller68">Github</a> </li>
+                    <li> <a href="https://twitter.com/lord_krondor">Twitter</a> </li>
+                </ul>
             </div>
         }
         .into_view()

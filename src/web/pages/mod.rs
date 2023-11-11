@@ -1,22 +1,20 @@
 use leptos::*;
 use leptos_router::*;
-use leptos_use::*;
 use serde::{Deserialize, Serialize};
 
 use crate::env::{APP_NAME, APP_VERSION};
 use crate::types::Manifest;
-use crate::utils::web::{get_manifest, get_url};
+use crate::utils::web::get_manifest;
+use crate::web::components::InternalLink;
 
 // This router is an attempt to make SPAs easy
 // Register and use pages here
 
-mod about;
 mod index;
-mod item;
+mod items;
 
-use about::AboutPage;
 use index::IndexPage;
-use item::ItemPage;
+use items::ItemsPage;
 
 /// A Shared page context to pass to all pages
 #[derive(Clone, Serialize, Deserialize)]
@@ -42,8 +40,7 @@ impl IntoView for PageContext {
     fn into_view(self) -> View {
         let page: Box<dyn Page> = match self.route() {
             Some(route) => match route.as_str() {
-                "items" => ItemPage::from_ctx(self),
-                "about" => AboutPage::from_ctx(self),
+                "items" => ItemsPage::from_ctx(self),
                 _ => IndexPage::from_ctx(self),
             },
             _ => IndexPage::from_ctx(self),
@@ -68,7 +65,7 @@ pub fn InternalRouter() -> impl IntoView {
             <h1>{APP_NAME} v{APP_VERSION}</h1>
             <nav>
                 <InternalLink query="".to_string() msg="Home".to_string()/>
-                <InternalLink query="?route=about".to_string() msg="About".to_string()/>
+                <InternalLink query="?route=items".to_string() msg="Blog".to_string()/>
             </nav>
             <main>
                 <Routes>
@@ -109,31 +106,5 @@ fn PageRoute() -> impl IntoView {
                 Some(c) => c.into_view()
             }}
         </div>
-    }
-}
-
-#[component]
-pub fn InternalLink(query: String, msg: String) -> impl IntoView {
-    let url = get_url().expect("url");
-    let url = format!("{}/{}", url, query);
-    let a_href_ref = create_node_ref::<leptos::html::A>();
-    let _ = use_event_listener(
-        a_href_ref,
-        leptos::ev::click,
-        move |_event: web_sys::MouseEvent| {
-            let a_ref = a_href_ref.get().expect("a_ref");
-            let url = a_ref.href();
-            let window = web_sys::window().expect("window");
-            window.location().set_href(&url).expect("href");
-        },
-    );
-
-    view! {
-        <a
-            href=url
-            ref=a_href_ref
-        >
-            {msg}
-        </a>
     }
 }
