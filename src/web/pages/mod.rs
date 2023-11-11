@@ -113,7 +113,7 @@ fn PageRoute() -> impl IntoView {
 }
 
 #[component]
-fn InternalLink(query: String, msg: String) -> impl IntoView {
+pub fn InternalLink(query: String, msg: String) -> impl IntoView {
     let url = get_url().expect("url");
     let url = format!("{}/{}", url, query);
     let a_href_ref = create_node_ref::<leptos::html::A>();
