@@ -1,3 +1,13 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@keyframes colorCycle {
+  0%, 100% { color: red; }
+  33% { color: blue; }
+  66% { color: yellow; }
+}
+
+.hover-cycle-colors:hover {
+  animation: colorCycle 1s infinite;
+}

@@ -50,9 +50,8 @@ impl IntoView for ItemsPage {
                     None => {
                         gloo::console::log!("No item found");
                         page_view.set(Some(view! {
-                            <div>
-                                <p><strong>"Hi there, this is just some stuff i like to work on: "</strong></p>
-                                <p><strong>"- Al"</strong></p>
+                            <div class="text-center top-0 left-0">
+                                <p><strong>"this is just a jumble of stuff i got. i should really organize it but for now ur gonna have to explore ;)"</strong></p>
                                 <ItemRowTable items=items/>
                             </div>
                         }.into_view()));
@@ -122,9 +121,12 @@ async fn render_item_view(item: &Item) -> View {
                         node_ref=audio_ref
                         src={url}
                     />
-                    <button
-                        node_ref=button_ref
-                    ></button>
+                    <div class="flex justify-center">
+                        <button
+                            class="text-center bg-blue-500 hover:bg-yellow-500 text-white font-bold py-2 px-4 rounded"
+                            node_ref=button_ref
+                        ></button>
+                    </div>
                 </div>
             }
         }

@@ -4,7 +4,6 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "prepare": "yarn && yarn playwright install",
     "test": "playwright test"
   },
   "keywords": [],
