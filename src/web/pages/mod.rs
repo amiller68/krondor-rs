@@ -61,19 +61,21 @@ pub trait Page: Send + Sync {
 #[component]
 pub fn InternalRouter() -> impl IntoView {
     view! {
-        <Router>
-            <h1>{APP_NAME} v{APP_VERSION}</h1>
-            <nav>
-                <InternalLink query="".to_string() msg="Home".to_string()/>
-                <InternalLink query="?route=items".to_string() msg="Blog".to_string()/>
-            </nav>
-            <main>
-                <Routes>
-                    <Route path="/" view=PageRoute/>
-                </Routes>
-            </main>
-        </Router>
-    }
+    <Router>
+        <h1 class="text-3xl font-comic-sans text-black hover:text-red-500 hover:bg-blue-500 hover:border-yellow-500">
+            {APP_NAME} v{APP_VERSION}
+        </h1>
+        <nav class="bg-egg-cream p-4">
+            <InternalLink query="".to_string()  msg="Home".to_string()/>
+            <InternalLink query="?route=items".to_string() msg="Blog".to_string()/>
+        </nav>
+        <main class="bg-egg-cream p-6">
+            <Routes>
+                <Route path="/" view=PageRoute/>
+            </Routes>
+        </main>
+    </Router>
+        }
 }
 
 /// An internal router should use the context to render a page

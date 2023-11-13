@@ -4,14 +4,13 @@ use leptos_use::use_event_listener;
 use serde::{Deserialize, Serialize};
 
 use crate::types::{Item, Render};
-use crate::web::components::{ItemRow, ItemRowTable};
 use crate::utils::web::{fix_src, get_item_text, get_item_url, markdown_to_html};
+use crate::web::components::{ItemRow, ItemRowTable};
 
 use super::{Page, PageContext};
 
 #[derive(Serialize, Deserialize, Clone)]
 pub struct ItemsPage(PageContext);
-
 
 impl Page for ItemsPage {
     fn ctx(&self) -> &PageContext {
@@ -50,7 +49,7 @@ impl IntoView for ItemsPage {
                 match item.get() {
                     None => {
                         gloo::console::log!("No item found");
-                        page_view.set(Some(view! { 
+                        page_view.set(Some(view! {
                             <div>
                                 <p><strong>"Hi there, this is just some stuff i like to work on: "</strong></p>
                                 <p><strong>"- Al"</strong></p>

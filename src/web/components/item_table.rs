@@ -4,8 +4,8 @@ use leptos::*;
 use leptos_struct_table::*;
 use serde::{Deserialize, Serialize};
 
-use crate::types::Item;
 use super::InternalLink;
+use crate::types::Item;
 
 #[derive(TableComponent, Serialize, Deserialize, Debug, Clone, Default, PartialEq)]
 pub struct ItemRow {

@@ -1,6 +1,6 @@
+use crate::utils::web::get_url;
 use leptos::*;
 use leptos_use::use_event_listener;
-use crate::utils::web::get_url;
 
 #[component]
 pub fn InternalLink(query: String, msg: String) -> impl IntoView {
@@ -22,6 +22,7 @@ pub fn InternalLink(query: String, msg: String) -> impl IntoView {
         <a
             href=url
             ref=a_href_ref
+            class="text-teal-600 hover:text-teal-700"
         >
             {msg}
         </a>
