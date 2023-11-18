@@ -22,7 +22,7 @@ pub fn InternalLink(query: String, msg: String) -> impl IntoView {
         <a
             href=url
             ref=a_href_ref
-            class="text-teal-600 hover:italic hover:text-teal-700"
+            class="link"
         >
             {msg}
         </a>

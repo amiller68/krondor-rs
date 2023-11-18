@@ -2,12 +2,97 @@
 @tailwind components;
 @tailwind utilities;
 
-@keyframes colorCycle {
-  0%, 100% { color: red; }
-  33% { color: blue; }
-  66% { color: yellow; }
+/* Custom CSS for Krondor Blog */
+
+/* Header */
+.header {
+  @apply fixed top-0 left-0 w-full bg-gray-dark z-10 flex items-center justify-between;
+  height: 10vh; /* 10% of the viewport height */
 }
 
-.hover-cycle-colors:hover {
-  animation: colorCycle 1s infinite;
+.header-logo {
+  @apply text-accent text-3xl font-bold pl-4; /* Increased text size and added left padding */
+}
+
+.header-logo:hover {
+  animation: colorCycle 2s infinite; /* Added color cycle animation */
+}
+
+.nav {
+  @apply flex justify-end items-center h-full mr-4 space-x-4; /* Added spacing between nav items */
+}
+
+/* Footer */
+.footer {
+  @apply fixed bottom-0 left-0 w-full bg-gray-light text-center text-white py-2;
+}
+
+.footer-nav {
+  @apply flex justify-center items-center gap-4 bg-gray-light py-3;
+}
+
+/* Example of styling for social media icons in the footer */
+.footer-nav .icon {
+  @apply inline-block w-6 h-6; /* Adjust width and height as needed */
+  fill: white; /* If SVGs allow fill styling */
+  filter: brightness(0) invert(1);
+}
+
+.footer-nav .icon:hover {
+  @apply scale-110; /* Slightly enlarge icon on hover for interactive feedback */
+}
+
+/* Body Text */
+.body-text {
+  @apply text-white mx-auto text-left block px-4;
+  max-width: 800px; /* Adjust this value as per content requirement */
+  margin-top: 16%; /* Adjust as needed */
+  padding-bottom: 16%; /* Adjust as needed */
+}
+
+.body-text h1 {
+  @apply text-4xl font-bold text-accent;
+}
+
+/* Internal Link */
+.link {
+  @apply text-teal-500;
+}
+
+.link:hover {
+  @apply italic text-accent text-teal-600;
+}
+
+.iframe-container {
+  padding-left: 10px; /* Adjust the padding as needed */
+  padding-right: 10px; /* Adjust the padding as needed */
+  height: calc(100vh); /* 100% - 15vh */
+  overflow-y: auto; /* Allows scrolling on the container if the content overflows */
+}
+
+.iframe-container iframe {
+  width: 100%;
+  height: 100%;
+  border: none; /* Optional: removes the border */
+}
+
+/* Breakpoints for Responsiveness */
+@media (max-width: 768px) {
+  /* Adjustments for mobile devices */
+  .header {
+    @apply text-sm;
+  }
+
+  .body-text {
+    @apply text-base;
+    padding-left: 2rem; /* Adjust as needed */
+    padding-right: 2rem;
+  }
+}
+
+/* Keyframes for Color Cycle Animation */
+@keyframes colorCycle {
+  0%, 100% { color: #cbdced; }
+  33% { color: #4A90E2; }
+  66% { color: #305a30; }
 }

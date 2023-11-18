@@ -86,7 +86,14 @@ async fn render_item_view(item: &Item) -> View {
         }
         Render::Html => {
             let url = get_item_url(item.name()).expect("url");
-            view! { <div> <iframe src={url} width="800" height="800"></iframe> </div> }
+            view! {
+                <div class="iframe-container">
+                    <iframe
+                        scrolling="no"
+                        src={url}
+                    ></iframe>
+                </div>
+            }
         }
         Render::Jpg => {
             let url = get_item_url(item.name()).expect("url");
@@ -97,36 +104,62 @@ async fn render_item_view(item: &Item) -> View {
             let url = get_item_url(item.name()).expect("url");
             let audio_ref: NodeRef<html::Audio> = create_node_ref::<html::Audio>();
             let button_ref: NodeRef<html::Button> = create_node_ref::<html::Button>();
+            let slider_ref: NodeRef<html::Input> = create_node_ref::<html::Input>();
 
             audio_ref.on_load(move |_| {
-                let audio = audio_ref.get().expect("audio");
                 button_ref.on_load(move |_| {
+                    let audio = audio_ref.get().expect("audio");
                     let button = button_ref.get().expect("button");
-                    button.set_inner_text("Play Audio");
+                    button.set_inner_text("▶");
                     let _ = use_event_listener(button_ref, leptos::ev::click, move |_| {
                         if audio.paused() {
                             let _ = audio.play().expect("play");
-                            button.set_inner_text("Pause Audio");
+                            button.set_inner_text("❚❚");
                         } else {
                             audio.pause().expect("pause");
-                            button.set_inner_text("Play Audio");
+                            button.set_inner_text("▶");
                         }
+                    });
+                });
+                slider_ref.on_load(move |_| {
+                    let slider = slider_ref.get().expect("slider");
+                    let audio = audio_ref.get().expect("audio");
+                    slider.set_type("range");
+                    slider.set_min("0");
+                    slider.set_value("0");
+                    slider.set_step("any");
+                    slider.set_max(&audio.duration().to_string());
+                    let _ = use_event_listener(slider_ref, leptos::ev::input, move |_| {
+                        let slider = slider_ref.get().expect("slider");
+                        let audio = audio_ref.get().expect("audio");
+                        audio.set_current_time(slider.value().parse().expect("parse"));
+                    });
+                    let _ = use_event_listener(audio_ref, leptos::ev::timeupdate, move |_| {
+                        let slider = slider_ref.get().expect("slider");
+                        let audio = audio_ref.get().expect("audio");
+                        slider.set_value(&audio.current_time().to_string());
                     });
                 });
             });
 
             view! {
-                <div class="prose max-w-none">
+                <div class="flex flex-col items-center justify-center space-y-4">
                     <audio
+                        class="hidden"
                         node_ref=audio_ref
                         src={url}
                     />
-                    <div class="flex justify-center">
+                    <div class="flex items-center space-x-2">
                         <button
-                            class="text-center bg-blue-500 hover:bg-yellow-500 text-white font-bold py-2 px-4 rounded"
+                            class="bg-teal-500 hover:bg-teal-600 font-bold py-2 px-4 rounded-full"
                             node_ref=button_ref
-                        ></button>
+                        />
                     </div>
+                    <input 
+                        type="range" 
+                        class="w-full h-2 bg-teal-500 rounded-lg appearance-none cursor-pointer" 
+                        node_ref=slider_ref
+                    />
                 </div>
             }
         }

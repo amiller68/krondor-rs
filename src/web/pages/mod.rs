@@ -62,20 +62,34 @@ pub trait Page: Send + Sync {
 pub fn InternalRouter() -> impl IntoView {
     view! {
         <Router>
-            <div class="fixed top-0 left-0 w-full z-10">
-                <header class="text-center text-3xl py-4 hover-cycle-colors">
+            <header class="header">
+                <div class="header-logo">
                     {APP_NAME} v{APP_VERSION}
-                </header>
-                <nav class="flex gap-4 justify-center py-2">
+                </div>
+                <nav class="nav">
                     <InternalLink query="".to_string()  msg="Home".to_string()/>
                     <InternalLink query="?route=items".to_string()  msg="Blog".to_string()/>
                 </nav>
-            </div>
-            <main class="mt-64 m-10">
-                <Routes>
-                    <Route path="/" view=PageRoute/>
-                </Routes>
+            </header>
+            <main class="body-text">
+                <PageRoute/>
             </main>
+            <footer class="footer">
+                <nav class="footer-nav">
+                    <a href="https://github.com/amiller68" class="icon">
+                        <img src="/static/icons/github.svg" alt="Github" class="icon"/>
+                    </a>
+                    <a href="https://twitter.com/lord_krondor" class="icon">
+                        <img src="/static/icons/twitter.svg" alt="Twitter" class="icon"/>
+                    </a>
+                    <a href="mailto:al@krondor.org" class="icon">
+                        <img src="/static/icons/email.svg" alt="Email" class="icon"/>
+                    </a>
+                    <a href="tg://resolve?domain=lord_krondor" class="icon">
+                        <img src="/static/icons/telegram.svg" alt="Telegram" class="icon"/>
+                    </a>
+                </nav>
+            </footer>
         </Router>
     }
 }

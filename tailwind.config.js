@@ -6,10 +6,29 @@ module.exports = {
   theme: {
     extend: {
       colors: {
-        'egg-cream': '#f0ead6', // Replace with your exact egg cream color
+        dark: '#121212', // primary dark color
+        gray: {
+          DEFAULT: '#1e1e1e',
+          dark: '#181818',
+          light: '#242424'
+        },
+        accent: '#14b8a6'
       },
       fontFamily: {
-        'comic-sans': ['Comic Sans MS', 'cursive'] // Make sure Comic Sans is available
+        'body': ['Roboto Mono', 'monospace'],
+      },
+      spacing: {
+        '10p': '10%', // for header height
+      },
+      keyframes: {
+        colorCycle: {
+          '0%, 100%': { color: '#FF6347' },
+          '33%': { color: '#4A90E2' },
+          '66%': { color: '#32CD32' }
+        },
+      },
+      animation: {
+        colorCycle: 'colorCycle 3s ease-in-out infinite',
       },
     },
   },
