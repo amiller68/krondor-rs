@@ -450,6 +450,51 @@
         8
       ],
       "render": "Mp3"
+    },
+    {
+      "name": "not-quite-a-tool.md",
+      "date": "2023-11-25T21:49:04.979072957Z",
+      "title": "Not Quite a Tool: Why GPT is Different",
+      "description": "I've been thinking about the connection between technology and agency and thought AI was a great topic to explore these ideas. Hope you enjoy!",
+      "cid": [
+        1,
+        85,
+        22,
+        32,
+        167,
+        255,
+        198,
+        248,
+        191,
+        30,
+        215,
+        102,
+        81,
+        193,
+        71,
+        86,
+        160,
+        97,
+        214,
+        98,
+        245,
+        128,
+        255,
+        77,
+        228,
+        59,
+        73,
+        250,
+        130,
+        216,
+        10,
+        75,
+        128,
+        248,
+        67,
+        74
+      ],
+      "render": "Markdown"
     }
   ]
 }
