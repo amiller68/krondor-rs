@@ -495,6 +495,51 @@
         74
       ],
       "render": "Markdown"
+    },
+    {
+      "name": "backpack-life.md",
+      "date": "2023-12-05T00:00:12.095815277Z",
+      "title": "life like a backpack",
+      "description": "a short haiku about my life setup",
+      "cid": [
+        1,
+        85,
+        22,
+        32,
+        54,
+        59,
+        178,
+        8,
+        194,
+        69,
+        127,
+        27,
+        43,
+        169,
+        18,
+        208,
+        219,
+        177,
+        140,
+        72,
+        164,
+        113,
+        171,
+        46,
+        65,
+        109,
+        212,
+        34,
+        55,
+        6,
+        224,
+        9,
+        40,
+        35,
+        204,
+        84
+      ],
+      "render": "Markdown"
     }
   ]
 }
